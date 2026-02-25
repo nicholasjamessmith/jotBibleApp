@@ -1,0 +1,82 @@
+* {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:link {
+  color: black
+}
+
+a:visited {
+  color: black;
+}
+
+a:hover {
+  color: blue;
+}
+
+a:active {
+  color: white;
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.center {
+  text-align: center;
+}
+
+.centerAlign {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.cross:hover {
+  border: 2px solid red;
+  border-radius: 100%;
+}
+
+.translation-select-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.translation-select-label {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(3rem, 1fr));
+  gap: 0.5rem;
+  list-style: none;
+  padding: 1rem 0;
+  width: 100%;
+  max-width: 600px;
+}
+
+.grid-item {
+  text-align: center;
+}
+
+.grid-link {
+  display: block;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.grid-link:hover {
+  background-color: #f0f0f0;
+}

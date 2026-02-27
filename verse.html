@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
-  <title>Select a Book</title>
+  <title>Select a Chapter</title>
 </head>
 
 <body class="container">
@@ -14,21 +14,24 @@
     <div class="container">
       <h1>
         <a class="flex" href="/">
-          <span>jotBible</span>
+          <h1>jotBible</h1>
         </a>
       </h1>
     </div>
   </header>
 
   <main class="container">
-    <div>
-      <div id="book-list"></div>
-    </div>
+    <!--<div id="viewing">-->
+      <h2>Select a Verse</h2>
+      <h4 class="list-heading">Select a Verse</h4>
+      <div id="verse-list" class="list-container numeric-list"></div>
+      <div class="eb-container" id="chapter-text"></div>
+    <!--</div>-->
   </main>
 
+  <script src="http://cdn.scripture.api.bible/fums/fumsv2.min.js"></script>
   <script src="my_key.js"></script>
-  <script src="book.js"></script>
-
+  <script src="verse.js"></script>
 
 </body>
 

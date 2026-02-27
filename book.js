@@ -12,7 +12,6 @@ fetch(`https://api.scripture.api.bible/v1/bibles/${versionId}/books`, {
     }
     const ul = document.createElement('ul');
     for (const book of res.data) {
-      console.log('book id:', book.id, '| full href:', `chapter.html?book=${book.id}`);
       ul.innerHTML += `<li><a href="chapter.html?book=${book.id}">${book.name}</a></li>`;
     }
     bookList.appendChild(ul);

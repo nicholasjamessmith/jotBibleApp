@@ -1,38 +1,41 @@
-const bibleVersionID = 'de4e12af7f28f599-01';
-const bibleBookID = new URLSearchParams(window.location.search).get('book');
-console.log('Full URL:', window.location.href);
-console.log('URL search:', window.location.search);
-console.log('bibleBookID:', bibleBookID);
-const bibleChapterList = document.querySelector('#chapter-list');
-const breadcrumbs = document.querySelector('#breadcrumbs');
-
-if (!bibleBookID) {
-  console.log('No book ID in URL — would redirect to index');
+const getParameterByName = (name) => {
+  const url = window.location.href;
+  name = name.replace(/[\[\]]/g, `\\$&`);
+  const regex = new RegExp(`[?&]` + name + `(=([^&#]*)|&|#|$)`),
+    results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return ``;
+  return decodeURIComponent(results[2].replace(/\+/g, ` `));
 }
+
+const bibleVersionID = 'de4e12af7f28f599-01';
+const bibleChapterList = document.querySelector('#chapter-list');
+const bibleBookID = getParameterByName('book');
+const abbreviation = getParameterByName('abbreviation');
 
 let chapterHTML = '';
 
-fetch(`https://api.scripture.api.bible/v1/bibles/${bibleVersionID}/books/${bibleBookID}/chapters`, {
-  headers: { 'api-key': API_KEY }
-})
-  .then(res => res.json())
-  .then(res => {
-    console.log(res);
-    if (!res.data || !Array.isArray(res.data)) {
-      console.error('Unexpected API response:', res);
-      return;
-    }
-    for (let chapter of res.data) {
-      chapterHTML += `<li class="grid-item"><a class="grid-link" href="verse.html?chapter=${chapter.id}">${chapter.number}</a></li>`;
-    }
-    bibleChapterList.innerHTML = chapterHTML;
-  });
+document.querySelector(`#viewing`).innerHTML = `Viewing: ${bibleBookID}`;
 
-document.querySelector('#viewing').innerHTML = bibleBookID;
-breadcrumbs.innerHTML = `
-  <ul>
-    <li><a href="index.html">Home</a></li>
-    <li><a href="book.html">Books</a></li>
-    <li>${bibleBookID}</li>
-  </ul>
-`;
+const getChapters = (bibleVersionID, bibleBookID) => {
+  return fetch(`https://api.scripture.api.bible/v1/bibles/${bibleVersionID}/books/${bibleBookID}/chapters`, {
+    headers: { 'api-key': API_KEY }
+  })
+    .then(res => res.json())
+    .then(res => {
+      if (!res.data || !Array.isArray(res.data)) {
+        console.error('Unexpected API response:', res);
+        return [];
+      }
+      return res.data;
+    });
+};
+
+getChapters(bibleVersionID, bibleBookID).then(chaptersList => {
+  chapterHTML += `<ol>`;
+  for (let chapter of chaptersList) {
+    chapterHTML += `<li><a href="verse.html?version=${bibleVersionID}${abbreviation}&chapter=${chapter.id}">${chapter.number}</a></li>`;
+  }
+  chapterHTML += `</ol>`;
+  bibleChapterList.innerHTML = chapterHTML;
+});

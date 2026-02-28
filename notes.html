@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>Notes</title>
+</head>
+
+<body class="container">
+
+  <header>
+    <div class="container">
+      <h1>
+        <a class="flex" href="/">
+          <span>jotBible</span>
+        </a>
+      </h1>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2>Notes</h2>
+    <textarea id="notes-input" placeholder="Write your notes here..."></textarea>
+    <div class="notes-actions">
+      <button id="save-btn">Save Note</button>
+      <span id="save-status"></span>
+    </div>
+    <div id="notes-cards"></div>
+  </main>
+
+  <script>
+    const notesInput = document.getElementById('notes-input');
+    const saveBtn = document.getElementById('save-btn');
+    const saveStatus = document.getElementById('save-status');
+    const notesCards = document.getElementById('notes-cards');
+
+    const getNotes = () => {
+      const notes = JSON.parse(localStorage.getItem('bible-notes-list') || '[]');
+      // Migrate old notes that lack an id
+      let migrated = false;
+      notes.forEach(n => {
+        if (!n.id) { n.id = Date.now() + Math.random(); migrated = true; }
+      });
+      if (migrated) saveNotes(notes);
+      return notes;
+    };
+    const saveNotes = (notes) => localStorage.setItem('bible-notes-list', JSON.stringify(notes));
+
+    const renderCards = () => {
+      const notes = getNotes();
+      notesCards.innerHTML = '';
+      if (notes.length === 0) return;
+
+      notes.forEach((note) => {
+        const card = document.createElement('div');
+        card.className = 'note-card';
+        card.dataset.id = note.id;
+        card.innerHTML = `
+          <div class="note-card-header">
+            <span class="note-card-date">${note.date}</span>
+          </div>
+          <p class="note-card-text">${note.text.replace(/\n/g, '<br>')}</p>
+          <div class="note-card-actions">
+            <a class="note-card-btn btn-view" href="note-view.html?id=${note.id}">View</a>
+            <button class="note-card-btn btn-edit" data-id="${note.id}">Edit</button>
+            <button class="note-card-btn btn-delete" data-id="${note.id}">Delete</button>
+          </div>
+        `;
+        notesCards.appendChild(card);
+      });
+
+      // Delete
+      notesCards.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const notes = getNotes().filter(n => String(n.id) !== String(btn.dataset.id));
+          saveNotes(notes);
+          renderCards();
+        });
+      });
+
+      // Edit (inline)
+      notesCards.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          const notes = getNotes();
+          const note = notes.find(n => String(n.id) === String(id));
+          const card = notesCards.querySelector(`.note-card[data-id="${id}"]`);
+
+          card.innerHTML = `
+            <div class="note-card-header">
+              <span class="note-card-date">${note.date}</span>
+            </div>
+            <textarea class="note-card-edit-area">${note.text}</textarea>
+            <div class="note-card-actions">
+              <button class="note-card-btn btn-save-edit" data-id="${id}">Save</button>
+              <button class="note-card-btn btn-cancel-edit">Cancel</button>
+            </div>
+          `;
+
+          card.querySelector('.btn-save-edit').addEventListener('click', () => {
+            const newText = card.querySelector('.note-card-edit-area').value.trim();
+            if (!newText) return;
+            const notes = getNotes();
+            const note = notes.find(n => String(n.id) === String(id));
+            note.text = newText;
+            note.date = note.date + ' (edited)';
+            saveNotes(notes);
+            renderCards();
+          });
+
+          card.querySelector('.btn-cancel-edit').addEventListener('click', renderCards);
+        });
+      });
+    };
+
+    saveBtn.addEventListener('click', () => {
+      const text = notesInput.value.trim();
+      if (!text) return;
+
+      const notes = getNotes();
+      notes.unshift({ id: Date.now(), text, date: new Date().toLocaleString() });
+      saveNotes(notes);
+      notesInput.value = '';
+      renderCards();
+
+      saveStatus.textContent = 'Note saved!';
+      setTimeout(() => saveStatus.textContent = '', 2000);
+    });
+
+    renderCards();
+  </script>
+
+</body>
+
+</html>

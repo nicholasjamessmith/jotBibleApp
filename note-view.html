@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>View Note</title>
+</head>
+
+<body class="container">
+
+  <header>
+    <div class="container">
+      <h1>
+        <a class="flex" href="/">
+          <span>jotBible</span>
+        </a>
+      </h1>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="note-view-nav">
+      <a href="notes.html" class="btn-back">&larr; Back to Notes</a>
+    </div>
+
+    <div id="note-view-content"></div>
+  </main>
+
+  <script>
+    const getNotes = () => JSON.parse(localStorage.getItem('bible-notes-list') || '[]');
+    const saveNotes = (notes) => localStorage.setItem('bible-notes-list', JSON.stringify(notes));
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const container = document.getElementById('note-view-content');
+
+    const renderView = () => {
+      const notes = getNotes();
+      const note = notes.find(n => String(n.id) === String(id));
+
+      if (!note) {
+        container.innerHTML = `<p class="note-view-missing">Note not found. It may have been deleted.</p>`;
+        return;
+      }
+
+      document.title = 'Note — jotBible';
+
+      container.innerHTML = `
+        <div class="note-view-header">
+          <span class="note-card-date">${note.date}</span>
+          <div class="note-view-actions">
+            <button id="edit-btn" class="note-card-btn btn-edit">Edit</button>
+            <button id="delete-btn" class="note-card-btn btn-delete">Delete</button>
+          </div>
+        </div>
+        <div class="note-view-body">
+          <p class="note-view-text">${note.text.replace(/\n/g, '<br>')}</p>
+        </div>
+      `;
+
+      document.getElementById('delete-btn').addEventListener('click', () => {
+        const notes = getNotes().filter(n => String(n.id) !== String(id));
+        saveNotes(notes);
+        window.location.href = 'notes.html';
+      });
+
+      document.getElementById('edit-btn').addEventListener('click', renderEdit);
+    };
+
+    const renderEdit = () => {
+      const notes = getNotes();
+      const note = notes.find(n => String(n.id) === String(id));
+
+      container.innerHTML = `
+        <div class="note-view-header">
+          <span class="note-card-date">${note.date}</span>
+          <div class="note-view-actions">
+            <button id="save-edit-btn" class="note-card-btn btn-save-edit">Save</button>
+            <button id="cancel-edit-btn" class="note-card-btn btn-cancel-edit">Cancel</button>
+            <button id="delete-btn" class="note-card-btn btn-delete">Delete</button>
+          </div>
+        </div>
+        <div class="note-view-body">
+          <textarea id="edit-area" class="note-view-edit-area">${note.text}</textarea>
+        </div>
+      `;
+
+      document.getElementById('save-edit-btn').addEventListener('click', () => {
+        const newText = document.getElementById('edit-area').value.trim();
+        if (!newText) return;
+        const notes = getNotes();
+        const note = notes.find(n => String(n.id) === String(id));
+        note.text = newText;
+        note.date = note.date.replace(' (edited)', '') + ' (edited)';
+        saveNotes(notes);
+        renderView();
+      });
+
+      document.getElementById('cancel-edit-btn').addEventListener('click', renderView);
+
+      document.getElementById('delete-btn').addEventListener('click', () => {
+        const notes = getNotes().filter(n => String(n.id) !== String(id));
+        saveNotes(notes);
+        window.location.href = 'notes.html';
+      });
+    };
+
+    renderView();
+  </script>
+
+</body>
+
+</html>

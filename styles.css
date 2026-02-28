@@ -1,0 +1,576 @@
+/* ============================================================
+   CSS Custom Properties
+   ============================================================ */
+:root {
+  --color-bg: #f7f5f0;
+  --color-surface: #ffffff;
+  --color-header-bg: #1a2744;
+  --color-header-text: #ffffff;
+  --color-text: #1e1e1e;
+  --color-text-muted: #6b7280;
+  --color-accent: #2e5fa3;
+  --color-accent-hover: #1e4a8a;
+  --color-border: #e2e0db;
+  --color-btn: #c8973b;
+  --color-btn-hover: #b07e28;
+  --color-btn-text: #ffffff;
+
+  --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
+
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  --max-width: 860px;
+  --header-height: 64px;
+}
+
+/* ============================================================
+   Reset & Base
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+a:hover {
+  color: var(--color-accent-hover);
+}
+
+/* ============================================================
+   Layout
+   ============================================================ */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
+header {
+  background-color: var(--color-header-bg);
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+header .container {
+  display: flex;
+  align-items: center;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+header h1 a,
+header h1 a span {
+  color: var(--color-header-text);
+  text-decoration: none;
+}
+
+header h1 a:hover,
+header h1 a span:hover {
+  color: var(--color-btn);
+}
+
+.flex {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ============================================================
+   Main Content
+   ============================================================ */
+main {
+  padding-block: 2.5rem;
+}
+
+main h2 {
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 1.5rem;
+}
+
+main h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-bottom: 1.25rem;
+}
+
+main h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+  margin-bottom: 0.75rem;
+}
+
+/* ============================================================
+   Home Page — Nav Cards
+   ============================================================ */
+.translation-select-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.translation-select-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.75rem;
+  background-color: var(--color-surface);
+  color: var(--color-accent);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.translation-select-label:hover {
+  background-color: var(--color-accent);
+  color: #fff;
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+}
+
+/* ============================================================
+   Book List
+   ============================================================ */
+#book-list ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.65rem;
+}
+
+#book-list li a {
+  display: block;
+  padding: 0.65rem 1rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+#book-list li a:hover {
+  background-color: var(--color-accent);
+  color: #fff;
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+}
+
+/* ============================================================
+   Chapter Grid
+   ============================================================ */
+.chapter-grid {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+  gap: 0.5rem;
+}
+
+.chapter-grid li a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.chapter-grid li a:hover {
+  background-color: var(--color-accent);
+  color: #fff;
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+}
+
+/* ============================================================
+   Verse List
+   ============================================================ */
+#verse-list ol,
+#verse-list {
+  list-style: none;
+}
+
+#verse-list li,
+.numeric-list li {
+  display: flex;
+  gap: 0.85rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  counter-increment: verse-counter;
+}
+
+#verse-list ol {
+  counter-reset: verse-counter;
+}
+
+#verse-list li::before {
+  content: counter(verse-counter);
+  font-size: 0.75rem;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  color: var(--color-text-muted);
+  min-width: 1.5rem;
+  padding-top: 0.35rem;
+}
+
+.eb-container {
+  margin-top: 1.5rem;
+}
+
+/* ============================================================
+   Notes Page
+   ============================================================ */
+#notes-input {
+  width: 100%;
+  min-height: 360px;
+  padding: 1rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+#notes-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(46, 95, 163, 0.15);
+}
+
+#save-btn {
+  margin-top: 1rem;
+  padding: 0.65rem 1.75rem;
+  background-color: var(--color-btn);
+  color: var(--color-btn-text);
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+#save-btn:hover {
+  background-color: var(--color-btn-hover);
+  box-shadow: var(--shadow-md);
+}
+
+#save-status {
+  margin-left: 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2d7a4f;
+}
+
+/* ============================================================
+   Notes Cards
+   ============================================================ */
+.notes-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+#notes-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.note-card {
+  background-color: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.15s ease;
+}
+
+.note-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.note-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.note-card-date {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.note-card-delete {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0 0.25rem;
+  transition: color 0.15s ease;
+}
+
+.note-card-delete:hover {
+  color: #c0392b;
+}
+
+.note-card-text {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--color-text);
+  white-space: pre-wrap;
+}
+
+/* ============================================================
+   Note Card Actions
+   ============================================================ */
+.note-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.note-card-btn {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-view {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.btn-view:hover {
+  background-color: var(--color-accent);
+  color: #fff;
+}
+
+.btn-edit {
+  border-color: var(--color-btn);
+  color: var(--color-btn);
+}
+.btn-edit:hover {
+  background-color: var(--color-btn);
+  color: #fff;
+}
+
+.btn-delete {
+  border-color: #c0392b;
+  color: #c0392b;
+}
+.btn-delete:hover {
+  background-color: #c0392b;
+  color: #fff;
+}
+
+.btn-save-edit {
+  border-color: #2d7a4f;
+  color: #2d7a4f;
+}
+.btn-save-edit:hover {
+  background-color: #2d7a4f;
+  color: #fff;
+}
+
+.btn-cancel-edit {
+  border-color: var(--color-text-muted);
+  color: var(--color-text-muted);
+}
+.btn-cancel-edit:hover {
+  background-color: var(--color-text-muted);
+  color: #fff;
+}
+
+.note-card-edit-area {
+  width: 100%;
+  min-height: 120px;
+  padding: 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  border: 1.5px solid var(--color-accent);
+  border-radius: var(--radius);
+  resize: vertical;
+  outline: none;
+  margin-top: 0.5rem;
+}
+
+/* ============================================================
+   Note View Page
+   ============================================================ */
+.note-view-nav {
+  margin-bottom: 1.5rem;
+}
+
+.btn-back {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.btn-back:hover {
+  color: var(--color-accent-hover);
+}
+
+.note-view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1.5px solid var(--color-border);
+}
+
+.note-view-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.note-view-body {
+  background-color: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.note-view-text {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  line-height: 1.85;
+  color: var(--color-text);
+  white-space: pre-wrap;
+}
+
+.note-view-edit-area {
+  width: 100%;
+  min-height: 320px;
+  padding: 0.85rem;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  border: 1.5px solid var(--color-accent);
+  border-radius: var(--radius);
+  resize: vertical;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(46, 95, 163, 0.1);
+}
+
+.note-view-missing {
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-top: 1rem;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 1.25rem;
+  }
+
+  main h2 {
+    font-size: 1.4rem;
+  }
+
+  #book-list ul {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+
+  .translation-select-container {
+    flex-direction: column;
+  }
+
+  .translation-select-label {
+    width: 100%;
+  }
+}

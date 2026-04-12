@@ -1,52 +1,5 @@
-/* ============================================================
-   CSS Custom Properties
-   ============================================================ */
-:root {
-  --color-bg: #f7f5f0;
-  --color-surface: #ffffff;
-  --color-header-bg: #1a2744;
-  --color-header-text: #ffffff;
-  --color-text: #1e1e1e;
-  --color-text-muted: #6b7280;
-  --color-accent: #2e5fa3;
-  --color-accent-hover: #1e4a8a;
-  --color-border: #e2e0db;
-  --color-btn: #c8973b;
-  --color-btn-hover: #b07e28;
-  --color-btn-text: #ffffff;
-
-  --font-sans: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  --font-serif: Georgia, 'Times New Roman', serif;
-
-  --radius: 8px;
-  --radius-lg: 12px;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
-
-  --max-width: 860px;
-  --header-height: 64px;
-}
-
-/* ============================================================
-   Reset & Base
-   ============================================================ */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  font-size: 16px;
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: var(--font-sans);
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  line-height: 1.6;
-  min-height: 100vh;
+/** {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 a {
@@ -544,33 +497,6 @@ main h4 {
   box-shadow: 0 0 0 3px rgba(46, 95, 163, 0.1);
 }
 
-.note-view-missing {
-  color: var(--color-text-muted);
-  font-style: italic;
-  margin-top: 1rem;
-}
-
-/* ============================================================
-   Responsive
-   ============================================================ */
-@media (max-width: 600px) {
-  header h1 {
-    font-size: 1.25rem;
-  }
-
-  main h2 {
-    font-size: 1.4rem;
-  }
-
-  #book-list ul {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  }
-
-  .translation-select-container {
-    flex-direction: column;
-  }
-
-  .translation-select-label {
-    width: 100%;
-  }
-}
+.grid-link:hover {
+  background-color: #f0f0f0;
+}*/

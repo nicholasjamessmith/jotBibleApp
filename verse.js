@@ -1,3 +1,6 @@
+import { getChapterContent } from './scripture-api.js';
+import { getChapters } from './scripture-api.js';
+
 const getParameterByName = (name) => {
   const url = window.location.href;
   name = name.replace(/[\[\]]/g, `\\$&`);
@@ -9,38 +12,31 @@ const getParameterByName = (name) => {
 };
 
 const bibleVersionID = 'de4e12af7f28f599-01';
+const bibleBookID = getParameterByName('book');
 const bibleChapterID = getParameterByName('chapter'); // Get chapter ID from URL
+const bibleChapterList = document.querySelector('#chapter-list');
 const verseList = document.getElementById('verse-list'); // Target the correct element
 
 let verseHTML = '';
 
-//document.querySelector(`#viewing`).innerHTML = `Viewing: ${bibleChapterID}`;
 
-const getVerses = (bibleVersionID, bibleChapterID) => {
-  return fetch(`https://api.scripture.api.bible/v1/bibles/${bibleVersionID}/chapters/${bibleChapterID}/verses`, {
-    headers: { 'api-key': API_KEY }
-  })
-    .then(res => res.json())
-    .then(res => {
-      if (!res.data || !Array.isArray(res.data)) {
-        console.error('Unexpected API response:', res);
-        return [];
-      }
-      return res.data;
-    });
-};
-
-getVerses(bibleVersionID, bibleChapterID).then(async verseList => {
-  let verseHTML = '<ol>';
-  for (let verse of verseList) {
-    // Fetch verse content
-    const res = await fetch(`https://api.scripture.api.bible/v1/bibles/${bibleVersionID}/verses/${verse.id}`, {
-      headers: { 'api-key': API_KEY }
-    });
-    const verseData = await res.json();
-    const verseText = verseData.data && verseData.data.content ? verseData.data.content : '';
-    verseHTML += `<li>${verseText}</li>`;
-  }
-  verseHTML += '</ol>';
-  document.getElementById('verse-list').innerHTML = verseHTML;
+getChapterContent(bibleVersionID, bibleChapterID).then((data) => {
+  console.log(data);
+  if (!data) return;
+  const content = data.content;
+  const el = document.getElementById('verse-list');
+  if (el) el.innerHTML = content;
 });
+
+
+const nextButtonClick = () => {
+  console.log("Next button clicked");
+}
+
+document.getElementById("next-btn").addEventListener("click", nextButtonClick);
+
+const prevButtonClick = () => {
+  console.log("Prev. button clicked");
+}
+
+document.getElementById("prev-btn").addEventListener("click", prevButtonClick);

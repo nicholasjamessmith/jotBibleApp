@@ -1,3 +1,5 @@
+import { getChapters } from './scripture-api.js';
+
 const getParameterByName = (name) => {
   const url = window.location.href;
   name = name.replace(/[\[\]]/g, `\\$&`);
@@ -17,24 +19,10 @@ let chapterHTML = '';
 
 document.querySelector(`#viewing`).innerHTML = `Viewing: ${bibleBookID}`;
 
-const getChapters = (bibleVersionID, bibleBookID) => {
-  return fetch(`https://api.scripture.api.bible/v1/bibles/${bibleVersionID}/books/${bibleBookID}/chapters`, {
-    headers: { 'api-key': API_KEY }
-  })
-    .then(res => res.json())
-    .then(res => {
-      if (!res.data || !Array.isArray(res.data)) {
-        console.error('Unexpected API response:', res);
-        return [];
-      }
-      return res.data;
-    });
-};
-
 getChapters(bibleVersionID, bibleBookID).then(chaptersList => {
   chapterHTML += `<ol>`;
   for (let chapter of chaptersList) {
-    chapterHTML += `<li><a href="verse.html?version=${bibleVersionID}${abbreviation}&chapter=${chapter.id}">${chapter.number}</a></li>`;
+    chapterHTML += `<li><a href="verse.html?book=version=${bibleVersionID}${abbreviation}&chapter=${chapter.id}">${chapter.number}</a></li>`;
   }
   chapterHTML += `</ol>`;
   bibleChapterList.innerHTML = chapterHTML;

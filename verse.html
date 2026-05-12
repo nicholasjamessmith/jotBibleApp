@@ -5,6 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
+  <script type="module" src="scripture-api.js"></script>
+  <script type="module" src="verse.js"></script>
+
   <title>Select a Chapter</title>
 </head>
 
@@ -14,7 +17,12 @@
     <div class="container">
       <h1>
         <a class="flex" href="/">
-          <h1>jotBible</h1>
+          <span>jotBible</span>
+        </a>
+      </h1>
+      <h1>
+        <a class="flex" href="/notes.html">
+          <span>Notes</span>
         </a>
       </h1>
     </div>
@@ -22,17 +30,20 @@
 
   <main class="container">
     <!--<div id="viewing">-->
-      <h2>Select a Verse</h2>
-      <h4 class="list-heading">Select a Verse</h4>
-      <div id="verse-list" class="list-container numeric-list"></div>
-      <div class="eb-container" id="chapter-text"></div>
+    <h1 id="viewing"></h1>
+    <h2>Select a Verse</h2>
+    <h4 class="list-heading">Select a Verse</h4>
+    <div id="verse-list" class="list-container numeric-list"></div>
+    <div class="eb-container" id="chapter-text"></div>
     <!--</div>-->
+
+    <div class="chapter-nav">
+      <button id="prev-btn">Previous</button>
+      <button id="next-btn">Next</button>
+    </div>
   </main>
 
   <script src="http://cdn.scripture.api.bible/fums/fumsv2.min.js"></script>
-  <script src="my_key.js"></script>
-  <script src="verse.js"></script>
-
 </body>
 
 </html>

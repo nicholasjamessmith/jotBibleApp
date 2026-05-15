@@ -5,45 +5,55 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
+  <script type="module" src="scripture-api.js"></script>
   <script type="module" src="notes.js"></script>
+
   <title>Notes</title>
 </head>
 
-<body class="container">
+<body>
 
   <header>
-    <div class="container">
-      <h1>
-        <a class="flex" href="/">
-          <span>jotBible</span>
-        </a>
-      </h1>
-      <h1>
-        <a class="flex" href="/notes.html">
-          <span>Notes</span>
-        </a>
-      </h1>
-    </div>
+    <h1>
+      <a class="flex" href="/">jotBible</a>
+    </h1>
   </header>
 
-  <h1>Notes</h1>
-  <div id="form">
-    <form>
-      <input type="text" placeholder="Enter note here..">
-      <input type="submit" value="Enter">
-    </form>
+  <div class="nav">
+    <a href="book.html" class="translation-select-label">Book</a>
+    <a class="flex active" href="/notes.html" aria-current="page">Notes</a>
   </div>
-  <div id="notes"></div>
 
-  <!--<div class="container">
-    <textarea class="note-text" label="note" placeholder="Enter note here">
-    </textarea>
-    <button class="btn submit-btn">Submit</button>
-    <div class="notes">
-      <div id="note-list">
-      </div>
+  <main class="container">
+    <h1 class="notes-header">Notes</h1>
+    <div id="form">
+      <form class="note-form">
+        <textarea id="note-input" class="note-input" placeholder="Enter note here.."></textarea>
+        <button class="note-submit" type="submit">Enter</button>
+      </form>
     </div>
-  </div>-->
+
+    <template id="note-template">
+      <button class="note">
+        <p></p>
+      </button>
+    </template>
+
+    <dialog id="modal">
+      <p id="modal-note-text"></p>
+      <div id="modal-actions">
+        <button type="button" id="modal-edit-btn">Edit</button>
+        <button type="button" id="modal-delete-btn">[X] Delete</button>
+        <button type="button" id="modal-exit-btn">Exit</button>
+      </div>
+      <form id="modal-form" hidden>
+        <textarea id="modal-input" rows="6"></textarea>
+        <input type="submit" value="Enter">
+      </form>
+    </dialog>
+
+    <div id="notes"></div>
+  </main>
 
 </body>
 

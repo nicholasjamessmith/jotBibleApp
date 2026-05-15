@@ -1,1 +1,281 @@
 /*GLOBAL STYLES*/
+a:link,
+a:visited,
+a:hover,
+a:active {
+  color: black;
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a[aria-current="page"] {
+  text-decoration: underline;
+  text-decoration-color: blue;
+  text-decoration-thickness: 4px;
+}
+
+body {
+  font-family: Poppins, sans-serif;
+}
+
+h1 {
+  text-transform: uppercase;
+}
+
+.container {
+  width: 100%;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 24px
+}
+
+.nav {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+}
+
+#book-list ul {
+  column-count: 2;
+  column-gap: 30px;
+}
+
+#chapter-list ul {
+  column-count: 2;
+  column-gap: 30px;
+}
+
+#chapter-title {
+  text-align: center;
+}
+
+#verse-list p {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+span.v {
+  font-size: 0.8em;
+  vertical-align: super;
+  font-weight: bold;
+}
+
+.notes-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.note-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.note-form textarea.note-input {
+  padding: 8px;
+  font-size: 1em;
+  border-radius: 8px;
+  border-color: gray;
+  height: 200px;
+}
+
+.note-form button.note-submit {
+  padding: 8px;
+  font-size: 1em;
+  border-radius: 8px;
+  border-color: gray;
+  background: white;
+  cursor: pointer;
+  width: 100px;
+  height: auto;
+  margin-left: auto;
+}
+
+#notes {
+  display: flex;
+  flex-direction: column;
+}
+
+.note {
+  background: white;
+  padding: 12px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 1em;
+  border-radius: 8px;
+  border-color: gray;
+}
+
+#modal {
+  padding: 32px;
+  max-width: 500px;
+  width: 90%;
+  border: none;
+}
+
+#modal::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+#modal-form {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+#modal-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  font-size: 1em;
+  resize: vertical;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#modal-form input[type="submit"] {
+  padding: 8px 16px;
+  font-size: 1em;
+  cursor: pointer;
+  border-radius: 4px;
+  border-color: gray;
+  background: white;
+  width: 100px;
+}
+
+@media (width <=320px) {
+  .container {
+    padding: 0 8px;
+  }
+
+  h1 {
+    font-size: 1.2em;
+  }
+
+  .nav {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .nav a {
+    font-size: 0.85em;
+    padding: 4px 0;
+  }
+
+  .note-form textarea.note-input {
+    height: 120px;
+    font-size: 0.95em;
+  }
+
+  .note-form button.note-submit {
+    width: 80px;
+    font-size: 0.9em;
+    padding: 6px;
+  }
+
+  .note {
+    padding: 8px;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+  }
+
+  #modal {
+    padding: 20px;
+    max-width: 95vw;
+    font-size: 0.95em;
+  }
+
+  #modal-input {
+    font-size: 0.95em;
+    height: 120px;
+  }
+
+  #book-list ul,
+  #chapter-list ul {
+    column-count: 1;
+    column-gap: 0;
+  }
+}
+
+@media (width <=600px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  h1 {
+    font-size: 1.4em;
+  }
+
+  .nav {
+    gap: 12px;
+  }
+
+  .nav a {
+    font-size: 0.9em;
+  }
+
+  .note-form textarea.note-input {
+    height: 150px;
+    font-size: 1em;
+  }
+
+  .note-form button.note-submit {
+    width: 90px;
+    font-size: 0.95em;
+  }
+
+  .note {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  #modal {
+    padding: 24px;
+    max-width: 90vw;
+  }
+
+  #modal-input {
+    height: 150px;
+  }
+
+  #book-list ul,
+  #chapter-list ul {
+    column-count: 1;
+  }
+}
+
+@media (width <=1200px) {
+  .container {
+    padding: 0 20px;
+    max-width: 95%;
+  }
+
+  .note-form textarea.note-input {
+    height: 180px;
+  }
+
+  .note-form button.note-submit {
+    width: 100px;
+  }
+
+  #modal {
+    padding: 28px;
+    max-width: 85vw;
+  }
+
+  #modal-input {
+    height: 180px;
+  }
+
+  #book-list ul,
+  #chapter-list ul {
+    column-count: 2;
+  }
+}
+
+@media (width <=1800px) {}
+
+@media (width > 1800px) {}

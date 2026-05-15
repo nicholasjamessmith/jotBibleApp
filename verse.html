@@ -8,34 +8,26 @@
   <script type="module" src="scripture-api.js"></script>
   <script type="module" src="verse.js"></script>
 
-  <title>Select a Chapter</title>
+  <title>Verse</title>
 </head>
 
-<body class="container">
+<body>
 
   <header>
-    <div class="container">
-      <h1>
-        <a class="flex" href="/">
-          <span>jotBible</span>
-        </a>
-      </h1>
-      <h1>
-        <a class="flex" href="/notes.html">
-          <span>Notes</span>
-        </a>
-      </h1>
-    </div>
+    <h1>
+      <a class="flex" href="/">jotBible</a>
+    </h1>
   </header>
 
+  <div class="nav">
+    <a href="book.html" class="translation-select-label" aria-current="page">Book</a>
+    <a class="flex" href="/notes.html">Notes</a>
+  </div>
+
   <main class="container">
-    <!--<div id="viewing">-->
-    <h1 id="viewing"></h1>
-    <h2>Select a Verse</h2>
-    <h4 class="list-heading">Select a Verse</h4>
+    <h1 id="chapter-title"></h1>
     <div id="verse-list" class="list-container numeric-list"></div>
     <div class="eb-container" id="chapter-text"></div>
-    <!--</div>-->
 
     <div class="chapter-nav">
       <button id="prev-btn">Previous</button>
@@ -44,6 +36,7 @@
   </main>
 
   <script src="http://cdn.scripture.api.bible/fums/fumsv2.min.js"></script>
+
 </body>
 
 </html>

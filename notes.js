@@ -1,9 +1,16 @@
-//Create variable 'input' representing all inputs on linked HTML file with type 'text'
-const input = document.querySelector("input[type='text']");
-//Create variable 'form' representing all elements on linked HTML document with ID 'form'
+const input = document.querySelector("textarea#note-input");
 const form = document.querySelector("#form");
-//Create variable 'notesDiv' representing all elements on linked HTML document with ID 'notes'
 const notesDiv = document.querySelector("#notes");
+
+const modal = document.querySelector("#modal");
+const modalNoteText = document.querySelector("#modal-note-text");
+const modalInput = document.querySelector("#modal-input");
+const modalForm = document.querySelector("#modal-form");
+const modalEditBtn = document.querySelector("#modal-edit-btn");
+const modalDeleteBtn = document.querySelector("#modal-delete-btn");
+const modalExitBtn = document.querySelector("#modal-exit-btn");
+
+let currentNoteIndex = null;
 
 //Loads all items in 'notes' item in localStorage
 const loadNotes = () => {
@@ -20,50 +27,38 @@ const saveNotes = () => {
   localStorage.setItem("notes", notesJSON);
 }
 
+const openModal = (note, index) => {
+  currentNoteIndex = index;
+  modalNoteText.innerText = note;
+  modalInput.value = note;
+  modalForm.hidden = true;
+  modal.showModal();
+}
+
+const closeModal = () => {
+  currentNoteIndex = null;
+  modal.close();
+  modalForm.hidden = true;
+}
+
 const populateNotesDiv = () => {
   notesDiv.innerHTML = "";
+  const template = document.querySelector("#note-template");
 
   for (const note of notes) {
-    const p = document.createElement("p")
-    const e = document.createElement("button")
-    const x = document.createElement("button")
-    p.classList.add("note")
+    const noteElement = template.content.cloneNode(true);
+    const noteButton = noteElement.querySelector(".note");
+    const p = noteElement.querySelector("p");
+
     p.innerText = note;
-    e.textContent = "Edit"
-    x.textContent = "[X] Delete";
-    notesDiv.append(p);
-    notesDiv.append(e);
-    notesDiv.append(x);
 
-    //Delete note
     const index = notes.indexOf(note);
-    const deleteNote = () => {
-      x.addEventListener("click", (event) => {
-        console.log("x clicked");
-        notes.splice(index, 1);
-        populateNotesDiv();
-      });
-    }
-    deleteNote();
 
-    //Update note
-    //When user clicks 'Edit' button on existing note
-    const updateNote = () => {
-      e.addEventListener("click", (event) => {
-        input.value = note;
-        console.log("notes", note);
-        notes.with(index, note);
-        notes.splice(index, 1);
-      });
+    noteButton.addEventListener("click", () => {
+      openModal(note, index);
+    });
 
-    }
-    updateNote();
-    //Note text appears in input
-    //Set value of p to input.value
-    //Remove target note
-    //Run delete function for that index
-    //Note text updates when user presses submit
-    //Run handleSubmit with current value of input (p) as parameter of addNote function
+    notesDiv.append(noteElement);
   }
   saveNotes();
 }
@@ -86,6 +81,34 @@ const handleSubmit = (event) => {
 }
 
 form.addEventListener("submit", handleSubmit)
+
+modalExitBtn.addEventListener("click", closeModal);
+
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) closeModal();
+});
+
+modalDeleteBtn.addEventListener("click", () => {
+  notes.splice(currentNoteIndex, 1);
+  saveNotes();
+  populateNotesDiv();
+  closeModal();
+});
+
+modalEditBtn.addEventListener("click", () => {
+  modalInput.value = modalNoteText.innerText;
+  modalForm.hidden = false;
+});
+
+modalForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const newText = modalInput.value;
+  notes[currentNoteIndex] = newText;
+  saveNotes();
+  populateNotesDiv();
+  modalNoteText.innerText = newText;
+  modalForm.hidden = true;
+});
 
 populateNotesDiv();
 

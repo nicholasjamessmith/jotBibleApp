@@ -5,29 +5,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
-  <script src="app.js"></script>
-  <title></title>
+  <script type="module" src="scripture-api.js"></script>
+
+  <title>Contents</title>
 </head>
 
-<header>
-  <div class="container">
-    <h1>
-      <a class="flex" href="/">
-        <span>jotBible</span>
-      </a>
-    </h1>
-    <h1>
-      <a class="flex" href="/notes.html">
-        <span>Notes</span>
-      </a>
-    </h1>
-  </div>
-</header>
-
 <body>
-  <div class="main">
-    <h2>Contents</h2>
+
+  <header>
+    <h1>
+      <a class="flex" href="/">jotBible</a>
+    </h1>
+  </header>
+
+  <div class="nav">
+    <a href="book.html" class="translation-select-label" aria-current="page">Book</a>
+    <a class="flex" href="/notes.html">Notes</a>
   </div>
+
+  <main class="container">
+    <h2>Contents</h2>
+  </main>
+
 </body>
 
 </html>

@@ -17,13 +17,15 @@ const bibleChapterID = getParameterByName('chapter'); // Get chapter ID from URL
 const bibleChapterList = document.querySelector('#chapter-list');
 const verseList = document.getElementById('verse-list'); // Target the correct element
 
-const CHAPTERSTATE = { chapterID: "" }
+const CHAPTERSTATE = { chapterID: bibleChapterID }
+const CHAPTERNUMBERSTATE = { chapterNumber: "" }
 const CONTENTSTATE = { chapterContent: "" }
 const NEXTSTATE = { nextChapter: "" }
 const PREVSTATE = { prevChapter: "" }
 
-getChapterContent(bibleVersionID, bibleChapterID).then((data) => {
+getChapterContent(bibleVersionID, CHAPTERSTATE.chapterID).then((data) => {
   if (!data) return;
+  CHAPTERNUMBERSTATE.chapterNumber = data.number;
   CONTENTSTATE.chapterContent = data.content;
   CHAPTERSTATE.chapterID = data.id;
   NEXTSTATE.nextChapter = data.next.id;
@@ -32,8 +34,16 @@ getChapterContent(bibleVersionID, bibleChapterID).then((data) => {
 });
 
 const render = () => {
+  const chapterTitleEl = document.getElementById('chapter-title');
+  if (chapterTitleEl) chapterTitleEl.textContent = `${CHAPTERNUMBERSTATE.chapterNumber}`;
   const el = document.getElementById('verse-list');
   if (el) el.innerHTML = CONTENTSTATE.chapterContent;
+}
+
+const updateUrl = (chapterID) => {
+  const url = new URL(window.location);
+  url.searchParams.set('chapter', chapterID);
+  window.history.pushState({}, '', url);
 }
 
 
@@ -44,8 +54,12 @@ const nextButtonClick = () => {
     const currentChapter = data.content
     const el = document.getElementById('verse-list');
     if (el) el.innerHTML = currentChapter;
-    NEXTSTATE.nextChapter = data.next.id;
+    CHAPTERSTATE.chapterID = data.id;
+    CHAPTERNUMBERSTATE.chapterNumber = data.number;
     CONTENTSTATE.chapterContent = data.content;
+    NEXTSTATE.nextChapter = data.next.id;
+    PREVSTATE.prevChapter = data.previous.id;
+    updateUrl(CHAPTERSTATE.chapterID);
     render();
   });
 };
@@ -57,8 +71,12 @@ const prevButtonClick = () => {
     const currentChapter = data.content
     const el = document.getElementById('verse-list');
     if (el) el.innnerHTML = currentChapter;
-    PREVSTATE.prevChapter = data.previous.id
+    CHAPTERSTATE.chapterID = data.id;
+    CHAPTERNUMBERSTATE.chapterNumber = data.number;
     CONTENTSTATE.chapterContent = data.content;
+    NEXTSTATE.nextChapter = data.next.id;
+    PREVSTATE.prevChapter = data.previous.id;
+    updateUrl(CHAPTERSTATE.chapterID);
     render();
   });
 };

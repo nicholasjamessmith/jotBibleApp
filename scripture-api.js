@@ -17,6 +17,22 @@ export async function bible() {
   return bibleData
 }
 
+const fetchBibleData = (basUrl) => {
+  return fetch(baseUrl, {
+    method: 'GET',
+    headers: {
+      'api-key': `${API_key}`,
+      'Content-Type': 'application/json'
+    },
+  })
+    .then((response) => response.json())
+    .catch((error) => {
+      console.error('Error fetching Bible data:', error);
+      return null;
+    });
+  console.log('Fetched Bible data:', bibleData);
+}
+
 //Return list of Bible books
 const getBooks = (bibleVersionID) => {
   return fetch(`https://api.scripture.api.bible/v1/bibles/${bibleVersionID}/books`, {
@@ -62,4 +78,6 @@ const getChapterContent = (bibleVersionID, bibleChapterID) => {
     });
 }
 
-export { getBooks, getChapters, getChapterContent };
+export {
+  getBooks, getChapters, getChapterContent, fetchBibleData
+};

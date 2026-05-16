@@ -12,6 +12,7 @@ const getParameterByName = (name) => {
 
 const bibleVersionID = 'de4e12af7f28f599-01';
 const bibleChapterList = document.querySelector('#chapter-list');
+const bibleChapterCircle = document.querySelector('.circle');
 const bibleBookID = getParameterByName('book');
 const abbreviation = getParameterByName('abbreviation');
 
@@ -22,8 +23,8 @@ document.querySelector(`#viewing`).innerHTML = `Viewing: ${bibleBookID}`;
 getChapters(bibleVersionID, bibleBookID).then(chaptersList => {
   chapterHTML += `<ol>`;
   for (let chapter of chaptersList) {
-    chapterHTML += `<li><a href="verse.html?book=version=${bibleVersionID}${abbreviation}&chapter=${chapter.id}">${chapter.number}</a></li>`;
+    chapterHTML += `<div><li><a href="verse.html?book=version=${bibleVersionID}${abbreviation}&chapter=${chapter.id}">${chapter.number}</a></li></div>`;
   }
   chapterHTML += `</ol>`;
-  bibleChapterList.innerHTML = chapterHTML;
+  bibleChapterCircle.innerHTML = chapterHTML;
 });

@@ -21,6 +21,7 @@ body {
 
 h1 {
   text-transform: uppercase;
+  text-decoration: underline 4px solid blue;
 }
 
 .container {
@@ -39,14 +40,68 @@ h1 {
   justify-content: space-around;
 }
 
-#book-list ul {
-  column-count: 2;
-  column-gap: 30px;
+#book-list {
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  overflow-x: hidden;
+  padding: 0;
+}
+
+.OTwrapper,
+.NTwrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.OTWrapper h2,
+.NTWrapper h2 {
+  text-align: center;
+}
+
+.OT,
+.NT {
+  display: flex;
+  flex-direction: column;
+  list-style-type: none;
+  align-items: flex-start overflow-wrap: normal;
+}
+
+.book-link::before {
+  content: "....................................";
+  flex: 1;
+  margin: 0px 5px;
+  /*border-bottom: 2px dotted black;*/
 }
 
 #chapter-list ul {
-  column-count: 2;
-  column-gap: 30px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  list-style-type: none;
+  padding: 0;
+}
+
+
+.circle li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 100%;
+  border: 2px solid black;
+  width: 75px;
+  height: 75px;
+  justify-content: center;
+}
+
+.circle ol {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  list-style-type: none;
+  padding: 0;
+  gap: 12px;
 }
 
 #chapter-title {

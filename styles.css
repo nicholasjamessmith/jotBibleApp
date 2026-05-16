@@ -65,7 +65,8 @@ h1 {
   display: flex;
   flex-direction: column;
   list-style-type: none;
-  align-items: flex-start overflow-wrap: normal;
+  align-items: flex-start;
+  overflow-wrap: normal;
 }
 
 .book-link::before {
@@ -302,6 +303,30 @@ span.v {
   #chapter-list ul {
     column-count: 1;
   }
+
+  #book-list {
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    padding: 0;
+  }
+
+  /*.OT,
+.NT {
+  display: flex;
+  flex-direction: column;
+  list-style-type: none;
+  align-items: flex-start;
+  overflow-wrap: normal;
+}*/
+
+  .book-link::before {
+    content: ".......................";
+    flex: 1;
+    margin: 0px 5px;
+  }
+
 }
 
 @media (width <=1200px) {
@@ -330,6 +355,12 @@ span.v {
   #book-list ul,
   #chapter-list ul {
     column-count: 2;
+  }
+
+  .book-link::before {
+    content: "..........";
+    flex: 1;
+    margin: 0px 5px;
   }
 }
 

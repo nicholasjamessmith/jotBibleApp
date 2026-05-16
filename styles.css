@@ -84,9 +84,11 @@ span.v {
 .note-form button.note-submit {
   padding: 8px;
   font-size: 1em;
+  border: 2px solid black;
   border-radius: 8px;
-  border-color: gray;
-  background: white;
+  background: blue;
+  color: white;
+  font-weight: 900;
   cursor: pointer;
   width: 100px;
   height: auto;

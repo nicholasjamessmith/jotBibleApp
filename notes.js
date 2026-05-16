@@ -14,10 +14,8 @@ let currentNoteIndex = null;
 
 //Loads all items in 'notes' item in localStorage
 const loadNotes = () => {
-  const notesJSON = localStorage.getItem("notes")
-  if (notesJSON) {
-    return JSON.parse(notesJSON);
-  }
+  const notesJSON = localStorage.getItem("notes");
+  return notesJSON ? JSON.parse(notesJSON) : [];
 }
 
 const notes = loadNotes();
@@ -68,12 +66,6 @@ const addNote = (newNote) => {
   populateNotesDiv();
 }
 
-//const updateNote = (index) => {
-//  const p = document.createElement("p")
-
-
-//}
-
 const handleSubmit = (event) => {
   event.preventDefault();
   const text = input.value;
@@ -111,24 +103,3 @@ modalForm.addEventListener("submit", (e) => {
 });
 
 populateNotesDiv();
-
-
-//document.querySelector('.submit-btn').addEventListener('click', () => {
-//  const content = document.querySelector('.note-text').value;
-//  console.log("Submit button clicked");
-//  console.log(content);
-
-//  const noteHTML = `<p>${content}</p>`;
-//  document.getElementById('note').innerHTML = noteHTML;
-//  console.log(noteHTML);
-//  console.log("endOfTheRoad");
-//});
-
-//let noteHTML = '';
-
-//document.querySelector('.submit-btn').addEventListener('click', () => {
-//  let noteHTML = '<p>';
-//  const content = document.querySelector('.note-text').value;
-//  noteHTML += `<p>${content}</p>`;
-//  document.getElementById('note-list').innerHTML = noteHTML;
-//});

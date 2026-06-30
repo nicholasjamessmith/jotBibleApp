@@ -78,6 +78,36 @@ const getChapterContent = (bibleVersionID, bibleChapterID) => {
     });
 }
 
+//Fetch a specific passage by its ID (e.g. "JHN.3.16" or "JHN.3.1-JHN.3.16")
+const getPassage = (bibleVersionID, passageId) => {
+  return fetch(`https://api.scripture.api.bible/v1/bibles/${bibleVersionID}/passages/${passageId}?content-type=text&include-verse-numbers=false`, {
+    headers: { 'api-key': API_key }
+  })
+    .then(res => res.json())
+    .then(res => {
+      if (!res.data) {
+        console.error('Unexpected API response:', res);
+        return null;
+      }
+      return res.data;
+    });
+}
+
+//Search verses by keyword or phrase
+const searchVerses = (bibleVersionID, query) => {
+  return fetch(`https://api.scripture.api.bible/v1/bibles/${bibleVersionID}/search?query=${encodeURIComponent(query)}&limit=40`, {
+    headers: { 'api-key': API_key }
+  })
+    .then(res => res.json())
+    .then(res => {
+      if (!res.data || !Array.isArray(res.data.verses)) {
+        console.error('Unexpected API response:', res);
+        return [];
+      }
+      return res.data.verses;
+    });
+}
+
 export {
-  getBooks, getChapters, getChapterContent, fetchBibleData
+  getBooks, getChapters, getChapterContent, fetchBibleData, searchVerses, getPassage
 };

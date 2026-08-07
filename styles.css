@@ -116,32 +116,6 @@ span.v {
   font-weight: bold;
 }
 
-/*Search form styles*/
-#search-form {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-#search-input {
-  padding: 8px;
-  font-size: 1em;
-  border-radius: 8px;
-  border: 1px solid gray;
-  font-family: Poppins, sans-serif;
-}
-
-#search-form input[type="submit"] {
-  padding: 8px 16px;
-  font-size: 1em;
-  border: 2px solid black;
-  border-radius: 8px;
-  background: black;
-  color: white;
-  font-weight: 900;
-  cursor: pointer;
-}
-
 .notes-header {
   text-align: center;
   margin-bottom: 24px;
@@ -222,8 +196,8 @@ span.v {
   font-size: 1em;
   cursor: pointer;
   border-radius: 4px;
-  background: blue;
   color: white;
+  background: blue;
   width: 100px;
 }
 

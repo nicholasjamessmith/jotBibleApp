@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
   <script type="module" src="scripture-api.js"></script>
+  <script type="module" src="search.js"></script>
   <title>jotBible</title>
 </head>
 
@@ -19,10 +20,16 @@
 
   <div class="nav">
     <a href="book.html" class="translation-select-label uppercase">Book</a>
+    <form>
+      <input type="text" id="search" placeholder="Search">
+      <input type="submit" id="submit" value="Search">
+    </form>
     <a class="flex uppercase" href="/notes.html">Notes</a>
   </div>
 
   <main class="container">
+    <ul id="search-results">
+    </ul>
   </main>
 
 </body>

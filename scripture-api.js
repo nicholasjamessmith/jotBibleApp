@@ -3,7 +3,6 @@ import { API_key } from './env.js';
 const baseUrl = `https://api.scripture.api.bible/v1/bibles`
 const bibleVersionID = `de4e12af7f28f599-01`
 
-
 //Fetch initial bible data
 export async function bible() {
   const response = await fetch(baseUrl + `/` + bibleVersionID, {

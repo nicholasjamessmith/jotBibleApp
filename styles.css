@@ -206,6 +206,21 @@ span.v {
   background-color: white;
 }
 
+#search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+  list-style-type: none;
+}
+
+#search-results li {
+  padding: 8px;
+  border: 1px dashed gray;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 @media (width <=320px) {
   .container {
     padding: 0 8px;

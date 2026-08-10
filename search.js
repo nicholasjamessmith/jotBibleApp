@@ -44,7 +44,23 @@ document.getElementById('submit').addEventListener('click', async (e) => {
   e.preventDefault();
   const query = document.getElementById('search').value;
   const results = await search(bibleVersionID, query);
+  renderResults(results);
 });
+
+const renderResults = (results) => {
+  document.getElementById('search-results').innerHTML = '';
+  const verses = results?.data?.verses ?? [];
+  verses.forEach(verse => {
+    //chapterIds data is not displaying. Need to fix.
+    const chapterId = verse.chapterId ?? verse.chapterIds?.[0];
+    const resultItem = document.createElement('li');
+    const resultLink = document.createElement('a');
+    resultLink.href = `verse.html?chapter=${chapterId}`;
+    resultLink.textContent = verse.text;
+    resultItem.appendChild(resultLink);
+    document.getElementById('search-results').appendChild(resultItem);
+  });
+};
 
 const search = async (bibleVersionId, query) => {
   const url =

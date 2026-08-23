@@ -1,5 +1,5 @@
 import { bibleVersionID } from './scripture-api.js';
-import { getBooksCached } from './bible-db.js';
+import { getBooksCached } from './local-db.js';
 
 const bookList = document.getElementById('book-list');
 

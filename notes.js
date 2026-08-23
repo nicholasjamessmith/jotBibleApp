@@ -1,3 +1,5 @@
+import { getAllNotes, saveNote, deleteNote } from './local-db.js';
+
 const input = document.querySelector("textarea#note-input");
 const form = document.querySelector("#form");
 const notesDiv = document.querySelector("#notes");
@@ -10,36 +12,24 @@ const modalEditBtn = document.querySelector("#modal-edit-btn");
 const modalDeleteBtn = document.querySelector("#modal-delete-btn");
 const modalExitBtn = document.querySelector("#modal-exit-btn");
 
-let currentNoteIndex = null;
+let currentNote = null;
 
-//Loads all items in 'notes' item in localStorage
-const loadNotes = () => {
-  const notesJSON = localStorage.getItem("notes");
-  return notesJSON ? JSON.parse(notesJSON) : [];
-}
-
-const notes = loadNotes();
-
-const saveNotes = () => {
-  const notesJSON = JSON.stringify(notes);
-  localStorage.setItem("notes", notesJSON);
-}
-
-const openModal = (note, index) => {
-  currentNoteIndex = index;
-  modalNoteText.innerText = note;
-  modalInput.value = note;
+const openModal = (note) => {
+  currentNote = note;
+  modalNoteText.innerText = note.text;
+  modalInput.value = note.text;
   modalForm.hidden = true;
   modal.showModal();
 }
 
 const closeModal = () => {
-  currentNoteIndex = null;
+  currentNote = null;
   modal.close();
   modalForm.hidden = true;
 }
 
-const populateNotesDiv = () => {
+const populateNotesDiv = async () => {
+  const notes = await getAllNotes();
   notesDiv.innerHTML = "";
   const template = document.querySelector("#note-template");
 
@@ -48,21 +38,18 @@ const populateNotesDiv = () => {
     const noteButton = noteElement.querySelector(".note");
     const p = noteElement.querySelector("p");
 
-    p.innerText = note;
-
-    const index = notes.indexOf(note);
+    p.innerText = note.text;
 
     noteButton.addEventListener("click", () => {
-      openModal(note, index);
+      openModal(note);
     });
 
     notesDiv.append(noteElement);
   }
-  saveNotes();
 }
 
-const addNote = (newNote) => {
-  notes.push(newNote);
+const addNote = async (text) => {
+  await saveNote({ text });
   populateNotesDiv();
 }
 
@@ -70,6 +57,7 @@ const handleSubmit = (event) => {
   event.preventDefault();
   const text = input.value;
   addNote(text);
+  input.value = "";
 }
 
 form.addEventListener("submit", handleSubmit)
@@ -80,9 +68,8 @@ modal.addEventListener("click", (e) => {
   if (e.target === modal) closeModal();
 });
 
-modalDeleteBtn.addEventListener("click", () => {
-  notes.splice(currentNoteIndex, 1);
-  saveNotes();
+modalDeleteBtn.addEventListener("click", async () => {
+  await deleteNote(currentNote.id);
   populateNotesDiv();
   closeModal();
 });
@@ -92,11 +79,11 @@ modalEditBtn.addEventListener("click", () => {
   modalForm.hidden = false;
 });
 
-modalForm.addEventListener("submit", (e) => {
+modalForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const newText = modalInput.value;
-  notes[currentNoteIndex] = newText;
-  saveNotes();
+  currentNote = { ...currentNote, text: newText };
+  await saveNote(currentNote);
   populateNotesDiv();
   modalNoteText.innerText = newText;
   modalForm.hidden = true;

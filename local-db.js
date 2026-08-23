@@ -1,8 +1,8 @@
-//Local IndexedDB cache for Bible data, backed by scripture-api.js
+//jotBible's local database: Bible content cache + user data (notes, flashcards, verse connections)
 import { getBooks, getChapters, getChapterContentRaw } from './scripture-api.js';
 
 const DB_NAME = 'jotBibleDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 
 let dbPromise = null;
 
@@ -19,6 +19,12 @@ const openDB = () => {
       if (!db.objectStoreNames.contains('books')) db.createObjectStore('books', { keyPath: 'bibleVersionID' });
       if (!db.objectStoreNames.contains('chapterLists')) db.createObjectStore('chapterLists', { keyPath: 'bookId' });
       if (!db.objectStoreNames.contains('chapterContent')) db.createObjectStore('chapterContent', { keyPath: 'id' });
+      if (!db.objectStoreNames.contains('notes')) db.createObjectStore('notes', { keyPath: 'id' });
+      if (!db.objectStoreNames.contains('flashcards')) db.createObjectStore('flashcards', { keyPath: 'id' });
+      if (!db.objectStoreNames.contains('verseConnections')) {
+        const store = db.createObjectStore('verseConnections', { keyPath: 'id' });
+        store.createIndex('by_verseId', 'verseIds', { multiEntry: true });
+      }
     };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
@@ -36,11 +42,41 @@ const idbGet = async (storeName, key) => {
   });
 }
 
+const idbGetAll = async (storeName) => {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(storeName, 'readonly');
+    const req = tx.objectStore(storeName).getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+const idbGetAllByIndex = async (storeName, indexName, key) => {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(storeName, 'readonly');
+    const req = tx.objectStore(storeName).index(indexName).getAll(key);
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => reject(req.error);
+  });
+}
+
 const idbPut = async (storeName, value) => {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const tx = db.transaction(storeName, 'readwrite');
     tx.objectStore(storeName).put(value);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+const idbDelete = async (storeName, key) => {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(storeName, 'readwrite');
+    tx.objectStore(storeName).delete(key);
     tx.oncomplete = () => resolve();
     tx.onerror = () => reject(tx.error);
   });
@@ -159,4 +195,88 @@ const getChapterContentCached = async (bibleVersionID, chapterId) => {
   return record;
 }
 
-export { getBooksCached, getChaptersCached, getChapterContentCached };
+//One-time migration of legacy localStorage data into IndexedDB, run lazily on first read
+let notesMigrated = false;
+const migrateLegacyNotes = async () => {
+  if (notesMigrated) return;
+  notesMigrated = true;
+  const legacyJSON = localStorage.getItem('notes');
+  if (!legacyJSON) return;
+  const legacyNotes = JSON.parse(legacyJSON);
+  for (const text of legacyNotes) {
+    await idbPut('notes', { id: crypto.randomUUID(), text, verseIds: [], reference: '', createdAt: Date.now() });
+  }
+  localStorage.removeItem('notes');
+}
+
+let flashcardsMigrated = false;
+const migrateLegacyFlashcards = async () => {
+  if (flashcardsMigrated) return;
+  flashcardsMigrated = true;
+  const legacyJSON = localStorage.getItem('flashcards');
+  if (!legacyJSON) return;
+  const legacyCards = JSON.parse(legacyJSON);
+  for (const card of legacyCards) {
+    await idbPut('flashcards', { id: crypto.randomUUID(), reference: card.reference, scripture: card.scripture, verseIds: [], createdAt: Date.now() });
+  }
+  localStorage.removeItem('flashcards');
+}
+
+//Notes
+const getAllNotes = async () => {
+  await migrateLegacyNotes();
+  return idbGetAll('notes');
+}
+
+const saveNote = (note) => {
+  if (!note.id) note.id = crypto.randomUUID();
+  if (!note.createdAt) note.createdAt = Date.now();
+  if (!note.verseIds) note.verseIds = [];
+  if (!note.reference) note.reference = '';
+  return idbPut('notes', note);
+}
+
+const deleteNote = (id) => idbDelete('notes', id);
+
+//Flashcards
+const getAllFlashcards = async () => {
+  await migrateLegacyFlashcards();
+  return idbGetAll('flashcards');
+}
+
+const saveFlashcard = (card) => {
+  if (!card.id) card.id = crypto.randomUUID();
+  if (!card.createdAt) card.createdAt = Date.now();
+  if (!card.verseIds) card.verseIds = [];
+  return idbPut('flashcards', card);
+}
+
+const deleteFlashcard = (id) => idbDelete('flashcards', id);
+
+//Verse connections (highlights, and future note/flashcard verse-links)
+const getConnectionsForVerseIds = async (verseIds) => {
+  const groups = await Promise.all(verseIds.map((id) => idbGetAllByIndex('verseConnections', 'by_verseId', id)));
+  const byId = new Map();
+  for (const group of groups) {
+    for (const connection of group) {
+      byId.set(connection.id, connection);
+    }
+  }
+  return Array.from(byId.values());
+}
+
+const saveConnection = (connection) => {
+  if (!connection.id) connection.id = crypto.randomUUID();
+  if (!connection.createdAt) connection.createdAt = Date.now();
+  if (!connection.targetId) connection.targetId = null;
+  return idbPut('verseConnections', connection);
+}
+
+const deleteConnection = (id) => idbDelete('verseConnections', id);
+
+export {
+  getBooksCached, getChaptersCached, getChapterContentCached,
+  getAllNotes, saveNote, deleteNote,
+  getAllFlashcards, saveFlashcard, deleteFlashcard,
+  getConnectionsForVerseIds, saveConnection, deleteConnection,
+};

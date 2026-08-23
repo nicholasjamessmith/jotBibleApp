@@ -1,5 +1,5 @@
 import { bibleVersionID } from './scripture-api.js';
-import { getChaptersCached } from './bible-db.js';
+import { getChaptersCached } from './local-db.js';
 
 const getParameterByName = (name) => {
   const url = window.location.href;

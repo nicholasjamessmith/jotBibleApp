@@ -1,3 +1,5 @@
+import { getAllFlashcards, saveFlashcard, deleteFlashcard } from './local-db.js';
+
 const sideAInput = document.querySelector("#side-a-input");
 const sideBInput = document.querySelector("#side-b-input");
 const form = document.querySelector(".card-form");
@@ -14,21 +16,8 @@ const editBtn = document.querySelector("#card-edit-btn");
 const deleteBtn = document.querySelector("#card-delete-btn");
 const exitBtn = document.querySelector("#card-exit-btn");
 
-let currentCardIndex = null;
+let currentCard = null;
 let showingSideA = true;
-
-//Loads all items in 'flashcards' item in localStorage
-const loadCards = () => {
-  const cardsJSON = localStorage.getItem("flashcards");
-  return cardsJSON ? JSON.parse(cardsJSON) : [];
-}
-
-const cards = loadCards();
-
-const saveCards = () => {
-  const cardsJSON = JSON.stringify(cards);
-  localStorage.setItem("flashcards", cardsJSON);
-}
 
 const renderModalSide = (card) => {
   if (showingSideA) {
@@ -40,8 +29,8 @@ const renderModalSide = (card) => {
   }
 }
 
-const openModal = (card, index) => {
-  currentCardIndex = index;
+const openModal = (card) => {
+  currentCard = card;
   showingSideA = true;
   renderModalSide(card);
   modalForm.hidden = true;
@@ -49,12 +38,13 @@ const openModal = (card, index) => {
 }
 
 const closeModal = () => {
-  currentCardIndex = null;
+  currentCard = null;
   modal.close();
   modalForm.hidden = true;
 }
 
-const populateCardsDiv = () => {
+const populateCardsDiv = async () => {
+  const cards = await getAllFlashcards();
   cardsDiv.innerHTML = "";
   const template = document.querySelector("#card-template");
 
@@ -65,19 +55,16 @@ const populateCardsDiv = () => {
 
     p.innerText = card.reference;
 
-    const index = cards.indexOf(card);
-
     cardButton.addEventListener("click", () => {
-      openModal(card, index);
+      openModal(card);
     });
 
     cardsDiv.append(cardElement);
   }
-  saveCards();
 }
 
-const addCard = (reference, scripture) => {
-  cards.push({ reference, scripture });
+const addCard = async (reference, scripture) => {
+  await saveFlashcard({ reference, scripture });
   populateCardsDiv();
 }
 
@@ -94,7 +81,7 @@ form.addEventListener("submit", handleSubmit);
 
 flipBtn.addEventListener("click", () => {
   showingSideA = !showingSideA;
-  renderModalSide(cards[currentCardIndex]);
+  renderModalSide(currentCard);
 });
 
 exitBtn.addEventListener("click", closeModal);
@@ -103,28 +90,26 @@ modal.addEventListener("click", (e) => {
   if (e.target === modal) closeModal();
 });
 
-deleteBtn.addEventListener("click", () => {
-  cards.splice(currentCardIndex, 1);
-  saveCards();
+deleteBtn.addEventListener("click", async () => {
+  await deleteFlashcard(currentCard.id);
   populateCardsDiv();
   closeModal();
 });
 
 editBtn.addEventListener("click", () => {
-  const card = cards[currentCardIndex];
-  modalSideAInput.value = card.reference;
-  modalSideBInput.value = card.scripture;
+  modalSideAInput.value = currentCard.reference;
+  modalSideBInput.value = currentCard.scripture;
   modalForm.hidden = false;
 });
 
-modalForm.addEventListener("submit", (e) => {
+modalForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const newReference = modalSideAInput.value;
   const newScripture = modalSideBInput.value;
-  cards[currentCardIndex] = { reference: newReference, scripture: newScripture };
-  saveCards();
+  currentCard = { ...currentCard, reference: newReference, scripture: newScripture };
+  await saveFlashcard(currentCard);
   populateCardsDiv();
-  renderModalSide(cards[currentCardIndex]);
+  renderModalSide(currentCard);
   modalForm.hidden = true;
 });
 

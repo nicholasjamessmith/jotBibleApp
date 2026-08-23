@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="scripture-api.js"></script>
+  <script type="module" src="study.js"></script>
+
+  <title>Study</title>
+</head>
+
+<body>
+
+  <header>
+    <h1>
+      <a class="flex" href="/">jotBible</a>
+    </h1>
+  </header>
+
+  <div class="nav">
+    <a href="book.html" class="translation-select-label">Book</a>
+    <a class="flex" href="/study.html" aria-current="page">Study</a>
+    <a class="flex" href="/notes.html">Notes</a>
+  </div>
+
+  <main class="container">
+    <h1 class="study-header">Study</h1>
+    <div id="form">
+      <form class="card-form">
+        <label for="side-a-input">Reference</label>
+        <input id="side-a-input" class="side-a-input" type="text" placeholder="e.g. John 3:16" required>
+        <label for="side-b-input">Scripture</label>
+        <textarea id="side-b-input" class="side-b-input" placeholder="e.g. For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life." required></textarea>
+        <button class="card-submit" type="submit">Add Card</button>
+      </form>
+    </div>
+
+    <template id="card-template">
+      <button class="flashcard">
+        <p class="flashcard-reference"></p>
+      </button>
+    </template>
+
+    <dialog id="card-modal">
+      <p id="card-modal-label"></p>
+      <p id="card-modal-text"></p>
+      <div id="card-modal-actions">
+        <button type="button" id="card-flip-btn">Flip</button>
+        <button type="button" id="card-edit-btn">Edit</button>
+        <button type="button" id="card-delete-btn">[X] Delete</button>
+        <button type="button" id="card-exit-btn">Exit</button>
+      </div>
+      <form id="card-modal-form" hidden>
+        <label for="card-modal-side-a">Reference</label>
+        <input id="card-modal-side-a" type="text">
+        <label for="card-modal-side-b">Scripture</label>
+        <textarea id="card-modal-side-b" rows="6"></textarea>
+        <input type="submit" value="Save">
+      </form>
+    </dialog>
+
+    <div id="flashcards"></div>
+  </main>
+
+</body>
+
+</html>

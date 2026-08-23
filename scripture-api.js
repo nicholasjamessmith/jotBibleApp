@@ -2,6 +2,7 @@
 import { API_key } from './env.js';
 const baseUrl = `https://api.scripture.api.bible/v1/bibles`
 const bibleVersionID = `de4e12af7f28f599-01`
+export { bibleVersionID };
 
 
 //Fetch initial bible data
@@ -108,6 +109,21 @@ const searchVerses = (bibleVersionID, query) => {
     });
 }
 
+//Return structured (per-verse) chapter content from a given chapter
+const getChapterContentRaw = (bibleVersionID, bibleChapterID) => {
+  return fetch(`https://api.scripture.api.bible/v1/bibles/${bibleVersionID}/chapters/${bibleChapterID}?content-type=json`, {
+    headers: { 'api-key': API_key }
+  })
+    .then((res) => res.json())
+    .then((res) => {
+      if (!res.data || !Array.isArray(res.data.content)) {
+        console.error('Unexpected API response:', res);
+        return null;
+      }
+      return res.data;
+    });
+}
+
 export {
-  getBooks, getChapters, getChapterContent, fetchBibleData, searchVerses, getPassage
+  getBooks, getChapters, getChapterContent, getChapterContentRaw, fetchBibleData, searchVerses, getPassage
 };

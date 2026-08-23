@@ -1,15 +1,9 @@
-import { getBooks, fetchBibleData } from './scripture-api.js';
+import { bibleVersionID } from './scripture-api.js';
+import { getBooksCached } from './bible-db.js';
 
-const baseUrl = `https://api.scripture.api.bible/v1/bibles`
-const versionId = 'de4e12af7f28f599-02';
 const bookList = document.getElementById('book-list');
 
-fetchBibleData().then((data) => {
-}).catch((error) => {
-  console.error('Error fetching Bible data:', error);
-});
-
-getBooks(versionId).then((books) => {
+getBooksCached(bibleVersionID).then((books) => {
   const OT = [];
   const NT = [];
   for (let z = 0; z < books.length; z++) {

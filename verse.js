@@ -1,5 +1,5 @@
-import { getChapterContent } from './scripture-api.js';
-import { getChapters } from './scripture-api.js';
+import { bibleVersionID } from './scripture-api.js';
+import { getChapterContentCached } from './bible-db.js';
 
 const getParameterByName = (name) => {
   const url = window.location.href;
@@ -11,7 +11,6 @@ const getParameterByName = (name) => {
   return decodeURIComponent(results[2].replace(/\+/g, ` `));
 };
 
-const bibleVersionID = 'de4e12af7f28f599-01';
 const bibleBookID = getParameterByName('book');
 const bibleChapterID = getParameterByName('chapter'); // Get chapter ID from URL
 const bibleChapterList = document.querySelector('#chapter-list');
@@ -19,14 +18,14 @@ const verseList = document.getElementById('verse-list'); // Target the correct e
 
 const CHAPTERSTATE = { chapterID: bibleChapterID }
 const CHAPTERNUMBERSTATE = { chapterNumber: "" }
-const CONTENTSTATE = { chapterContent: "" }
+const CONTENTSTATE = { verses: [] }
 const NEXTSTATE = { nextChapter: "" }
 const PREVSTATE = { prevChapter: "" }
 
-getChapterContent(bibleVersionID, CHAPTERSTATE.chapterID).then((data) => {
+getChapterContentCached(bibleVersionID, CHAPTERSTATE.chapterID).then((data) => {
   if (!data) return;
   CHAPTERNUMBERSTATE.chapterNumber = data.number;
-  CONTENTSTATE.chapterContent = data.content;
+  CONTENTSTATE.verses = data.verses;
   CHAPTERSTATE.chapterID = data.id;
   NEXTSTATE.nextChapter = data.next.id;
   PREVSTATE.prevChapter = data.previous.id;
@@ -37,7 +36,15 @@ const render = () => {
   const chapterTitleEl = document.getElementById('chapter-title');
   if (chapterTitleEl) chapterTitleEl.textContent = `${CHAPTERNUMBERSTATE.chapterNumber}`;
   const el = document.getElementById('verse-list');
-  if (el) el.innerHTML = CONTENTSTATE.chapterContent;
+  if (!el) return;
+  el.innerHTML = '';
+  for (const verse of CONTENTSTATE.verses) {
+    const verseEl = document.createElement('span');
+    verseEl.className = 'verse';
+    verseEl.dataset.verseId = verse.id;
+    verseEl.innerHTML = `<span class="v">${verse.number}</span>${verse.text} `;
+    el.appendChild(verseEl);
+  }
 }
 
 const updateUrl = (chapterID) => {
@@ -48,15 +55,11 @@ const updateUrl = (chapterID) => {
 
 
 const nextButtonClick = () => {
-  getChapterContent(bibleVersionID, NEXTSTATE.nextChapter).then((data) => {
-    console.log(data)
+  getChapterContentCached(bibleVersionID, NEXTSTATE.nextChapter).then((data) => {
     if (!data) return;
-    const currentChapter = data.content
-    const el = document.getElementById('verse-list');
-    if (el) el.innerHTML = currentChapter;
     CHAPTERSTATE.chapterID = data.id;
     CHAPTERNUMBERSTATE.chapterNumber = data.number;
-    CONTENTSTATE.chapterContent = data.content;
+    CONTENTSTATE.verses = data.verses;
     NEXTSTATE.nextChapter = data.next.id;
     PREVSTATE.prevChapter = data.previous.id;
     updateUrl(CHAPTERSTATE.chapterID);
@@ -65,15 +68,11 @@ const nextButtonClick = () => {
 };
 
 const prevButtonClick = () => {
-  getChapterContent(bibleVersionID, PREVSTATE.prevChapter).then((data) => {
-    console.log(data);
+  getChapterContentCached(bibleVersionID, PREVSTATE.prevChapter).then((data) => {
     if (!data) return;
-    const currentChapter = data.content
-    const el = document.getElementById('verse-list');
-    if (el) el.innnerHTML = currentChapter;
     CHAPTERSTATE.chapterID = data.id;
     CHAPTERNUMBERSTATE.chapterNumber = data.number;
-    CONTENTSTATE.chapterContent = data.content;
+    CONTENTSTATE.verses = data.verses;
     NEXTSTATE.nextChapter = data.next.id;
     PREVSTATE.prevChapter = data.previous.id;
     updateUrl(CHAPTERSTATE.chapterID);

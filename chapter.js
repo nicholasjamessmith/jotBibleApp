@@ -1,4 +1,5 @@
-import { getChapters } from './scripture-api.js';
+import { bibleVersionID } from './scripture-api.js';
+import { getChaptersCached } from './bible-db.js';
 
 const getParameterByName = (name) => {
   const url = window.location.href;
@@ -10,7 +11,6 @@ const getParameterByName = (name) => {
   return decodeURIComponent(results[2].replace(/\+/g, ` `));
 }
 
-const bibleVersionID = 'de4e12af7f28f599-01';
 const bibleChapterList = document.querySelector('#chapter-list');
 const bibleChapterCircle = document.querySelector('.circle');
 const bibleBookID = getParameterByName('book');
@@ -20,7 +20,7 @@ let chapterHTML = '';
 
 document.querySelector(`#viewing`).innerHTML = `Viewing: ${bibleBookID}`;
 
-getChapters(bibleVersionID, bibleBookID).then(chaptersList => {
+getChaptersCached(bibleVersionID, bibleBookID).then(chaptersList => {
   chapterHTML += `<ol>`;
   for (let chapter of chaptersList) {
     chapterHTML += `<div><li><a href="verse.html?book=version=${bibleVersionID}${abbreviation}&chapter=${chapter.id}">${chapter.number}</a></li></div>`;

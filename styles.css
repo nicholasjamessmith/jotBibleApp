@@ -106,7 +106,8 @@ h1 {
   text-align: center;
 }
 
-#verse-list p {
+#verse-list p,
+#verse-list .verse {
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 

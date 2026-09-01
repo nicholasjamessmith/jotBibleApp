@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
   <script type="module" src="scripture-api.js"></script>
+  <script type="module" src="./search.js"></script>
 
   <title>Contents</title>
 </head>
@@ -22,6 +23,10 @@
     <a href="book.html" class="translation-select-label" aria-current="page">Book</a>
     <a class="flex" href="/study.html">Study</a>
     <a class="flex" href="/notes.html">Notes</a>
+    <form id="search-form">
+      <input id="search-input" title="search" label="search" placeholder="Search" type="text">
+      <input title="submit" label="submit" type="submit">
+    </form>
   </div>
 
   <main class="container">

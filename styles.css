@@ -36,6 +36,7 @@ h1 {
   width: 100%;
   justify-content: space-around;
   align-items: center;
+  margin-bottom: 20px;
 }
 
 #book-list {
@@ -67,12 +68,12 @@ h1 {
   overflow-wrap: normal;
 }
 
-.book-link::before {
+/*.book-link::before {
   content: "....................................";
   flex: 1;
   margin: 0px 5px;
-  /*border-bottom: 2px dotted black;*/
-}
+  border-bottom: 2px dotted black;
+}*/
 
 #chapter-list ul {
   display: flex;

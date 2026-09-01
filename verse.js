@@ -19,7 +19,6 @@ const verseList = document.getElementById('verse-list'); // Target the correct e
 const highlightPopup = document.getElementById('highlight-popup');
 const highlightUnderlineBtn = document.getElementById('highlight-underline-btn');
 const highlightRemoveBtn = document.getElementById('highlight-remove-btn');
-const highlightCancelBtn = document.getElementById('highlight-cancel-btn');
 
 const CHAPTERSTATE = { chapterID: bibleChapterID, bookId: bibleBookID }
 const CHAPTERNUMBERSTATE = { chapterNumber: "" }
@@ -52,20 +51,6 @@ const updateHighlightPopup = () => {
   highlightPopup.hidden = selectedVerseIds.size === 0 && selectedRemovalVerseIds.size === 0;
   if (highlightUnderlineBtn) highlightUnderlineBtn.hidden = selectedVerseIds.size === 0;
   if (highlightRemoveBtn) highlightRemoveBtn.hidden = selectedRemovalVerseIds.size === 0;
-}
-
-const clearSelection = () => {
-  for (const verseId of selectedVerseIds) {
-    const el = verseElements.get(verseId);
-    if (el) el.classList.remove('selected');
-  }
-  for (const verseId of selectedRemovalVerseIds) {
-    const el = verseElements.get(verseId);
-    if (el) el.classList.remove('selected');
-  }
-  selectedVerseIds.clear();
-  selectedRemovalVerseIds.clear();
-  updateHighlightPopup();
 }
 
 const render = () => {
@@ -133,8 +118,6 @@ const prevButtonClick = () => {
 document.getElementById("next-btn").addEventListener("click", nextButtonClick);
 
 document.getElementById("prev-btn").addEventListener("click", prevButtonClick);
-
-highlightCancelBtn.addEventListener("click", clearSelection);
 
 highlightUnderlineBtn.addEventListener("click", async () => {
   const orderedVerses = CONTENTSTATE.verses.filter((v) => selectedVerseIds.has(v.id));

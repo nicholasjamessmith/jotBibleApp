@@ -140,6 +140,10 @@ span.v {
   text-decoration-thickness: 2px;
 }
 
+#highlight-popup[hidden] {
+  display: none;
+}
+
 #highlight-popup {
   position: fixed;
   left: 50%;
@@ -170,15 +174,7 @@ span.v {
 }
 
 #highlight-remove-btn {
-  border: 2px solid red;
-  background: red;
-  color: white;
-}
-
-#highlight-cancel-btn {
-  border: 2px solid gray;
-  background: white;
-  color: black;
+  border: 2px dashed blue;
 }
 
 /*Search form styles*/

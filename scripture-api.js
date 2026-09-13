@@ -1,7 +1,7 @@
 //API calls
 import { API_key } from './env.js';
 const baseUrl = `https://api.scripture.api.bible/v1/bibles`
-const bibleVersionID = `de4e12af7f28f599-01`
+const bibleVersionID = `de4e12af7f28f599-02`
 export { bibleVersionID };
 
 

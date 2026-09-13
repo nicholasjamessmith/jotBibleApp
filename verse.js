@@ -19,6 +19,7 @@ const verseList = document.getElementById('verse-list'); // Target the correct e
 const highlightPopup = document.getElementById('highlight-popup');
 const highlightUnderlineBtn = document.getElementById('highlight-underline-btn');
 const highlightRemoveBtn = document.getElementById('highlight-remove-btn');
+const highlightCopyBtn = document.getElementById('highlight-copy-btn');
 
 const CHAPTERSTATE = { chapterID: bibleChapterID, bookId: bibleBookID }
 const CHAPTERNUMBERSTATE = { chapterNumber: "" }
@@ -51,6 +52,7 @@ const updateHighlightPopup = () => {
   highlightPopup.hidden = selectedVerseIds.size === 0 && selectedRemovalVerseIds.size === 0;
   if (highlightUnderlineBtn) highlightUnderlineBtn.hidden = selectedVerseIds.size === 0;
   if (highlightRemoveBtn) highlightRemoveBtn.hidden = selectedRemovalVerseIds.size === 0;
+  if (highlightCopyBtn) highlightCopyBtn.hidden = selectedVerseIds.size === 0 && selectedRemovalVerseIds.size === 0;
 }
 
 const render = () => {
@@ -175,6 +177,34 @@ highlightRemoveBtn.addEventListener("click", async () => {
     }
   }
   chapterConnections = await getConnectionsForVerseIds(CONTENTSTATE.verses.map((v) => v.id));
+  selectedRemovalVerseIds.clear();
+  updateHighlightPopup();
+});
+
+highlightCopyBtn.addEventListener("click", async () => {
+  const orderedVerses = CONTENTSTATE.verses.filter(
+    (v) => selectedVerseIds.has(v.id) || selectedRemovalVerseIds.has(v.id)
+  );
+  if (orderedVerses.length === 0) return;
+
+  const books = await getBooksCached(bibleVersionID);
+  const book = books.find((b) => b.id === CHAPTERSTATE.bookId);
+  const bookName = book ? book.name : CHAPTERSTATE.bookId;
+  const reference = formatCitation(bookName, orderedVerses);
+  const text = `"${orderedVerses.map((v) => v.text.trim()).join(' ')}" (${reference})`;
+
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (error) {
+    console.error('Failed to copy verses to clipboard:', error);
+    return;
+  }
+
+  for (const verse of orderedVerses) {
+    const el = verseElements.get(verse.id);
+    if (el) el.classList.remove('selected');
+  }
+  selectedVerseIds.clear();
   selectedRemovalVerseIds.clear();
   updateHighlightPopup();
 });

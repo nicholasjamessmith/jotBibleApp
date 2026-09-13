@@ -177,6 +177,10 @@ span.v {
   border: 2px dashed blue;
 }
 
+#highlight-copy-btn {
+  border: 2px solid black;
+}
+
 /*Search form styles*/
 #search-form {
   position: relative;

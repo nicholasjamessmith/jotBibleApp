@@ -231,6 +231,8 @@ body.home .nav > a {
 #verse-list {
   line-height: 1.8;
   margin-top: var(--space-4);
+  font-size: 1.1em;
+  font-weight: 500;
 }
 
 #verse-list p,

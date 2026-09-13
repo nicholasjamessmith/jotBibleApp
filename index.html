@@ -9,23 +9,23 @@
   <title>jotBible</title>
 </head>
 
-<body>
+<body class="home">
 
   <header>
     <h1>
       <a class="flex" href="/">jotBible</a>
     </h1>
+    <form id="search-form">
+      <input id="search-input" title="search" label="search" placeholder="Search" type="text">
+      <input title="submit" label="submit" type="submit">
+      <ul id="search-results"></ul>
+    </form>
   </header>
 
   <div class="nav">
     <a href="book.html" class="translation-select-label">Book</a>
     <a class="flex" href="/study.html">Study</a>
     <a class="flex" href="/notes.html">Notes</a>
-    <form id="search-form">
-      <input id="search-input" title="search" label="search" placeholder="Search" type="text">
-      <input title="submit" label="submit" type="submit">
-      <ul id="search-results"></ul>
-    </form>
   </div>
 
   <main class="container">

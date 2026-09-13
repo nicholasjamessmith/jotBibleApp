@@ -209,6 +209,22 @@ highlightCopyBtn.addEventListener("click", async () => {
   updateHighlightPopup();
 });
 
+//Clicking anywhere outside the verse list or the popup itself cancels any pending
+//selection (both a fresh highlight and a pending removal), matching the same
+//"click away to dismiss" behavior already used for the search dropdown.
+document.addEventListener('click', (event) => {
+  if (selectedVerseIds.size === 0 && selectedRemovalVerseIds.size === 0) return;
+  if (verseList.contains(event.target) || highlightPopup.contains(event.target)) return;
+
+  for (const verseId of [...selectedVerseIds, ...selectedRemovalVerseIds]) {
+    const el = verseElements.get(verseId);
+    if (el) el.classList.remove('selected');
+  }
+  selectedVerseIds.clear();
+  selectedRemovalVerseIds.clear();
+  updateHighlightPopup();
+});
+
 //When user clicks next button, next chapter loads if exists.
 //API call to fetch current chapter data.
 //Return current chapter ID

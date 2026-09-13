@@ -241,7 +241,8 @@ span.v {
 }
 
 #search-results a {
-  display: block;
+  display: flex;
+  flex-direction: column;
   padding: 8px;
   color: black;
   text-decoration: none;
@@ -249,6 +250,18 @@ span.v {
 
 #search-results a:hover {
   background: #f0f0f0;
+}
+
+.search-result-reference {
+  font-weight: 700;
+  font-size: 0.85em;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #ccc;
+}
+
+.search-result-text {
+  font-size: 0.95em;
 }
 
 /*Shared card design system - used by Notes today, Study will reuse it later*/

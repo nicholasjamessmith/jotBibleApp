@@ -165,6 +165,7 @@ span.v {
   border-radius: 4px;
   cursor: pointer;
   font-weight: 900;
+  white-space: nowrap;
 }
 
 #highlight-underline-btn {
@@ -206,6 +207,7 @@ span.v {
   color: white;
   font-weight: 900;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 #search-results {
@@ -249,195 +251,145 @@ span.v {
   background: #f0f0f0;
 }
 
-.notes-header {
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.note-form {
+/*Shared card design system - used by Notes today, Study will reuse it later*/
+.card-feed {
   display: flex;
   flex-direction: column;
+  gap: 12px;
 }
 
-.note-form textarea.note-input {
-  padding: 8px;
-  font-size: 1em;
-  border-radius: 8px;
-  border-color: gray;
-  height: 200px;
-}
-
-.note-form button.note-submit {
-  padding: 8px;
-  font-size: 1em;
-  border: 2px solid black;
-  border-radius: 8px;
-  background: blue;
-  color: white;
-  font-weight: 900;
-  cursor: pointer;
-  width: 100px;
-  height: auto;
-  margin-left: auto;
-}
-
-#notes {
+#note-list {
   display: flex;
   flex-direction: column;
+  gap: 12px;
 }
 
-.note {
+.card-tile {
   background: white;
-  padding: 12px;
-  margin-bottom: 12px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.card-tile--entry {
+  display: flex;
+  flex-direction: column;
+  min-height: 108px;
+  width: 100%;
   cursor: pointer;
   text-align: left;
+  font-family: inherit;
   font-size: 1em;
-  border-radius: 8px;
-  border-color: gray;
 }
 
-#modal {
-  padding: 32px;
-  max-width: 500px;
-  width: 90%;
-  border: none;
+.card-preview-text {
+  margin: 0;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  line-clamp: 3;
+  overflow: hidden;
 }
 
-#modal::backdrop {
-  background: rgba(0, 0, 0, 0.5);
+.card-meta {
+  margin-top: auto;
+  padding-top: 8px;
 }
 
-#modal-form {
-  margin-top: 16px;
-  display: flex;
-  flex-direction: column;
+.card-date {
+  font-size: 0.8em;
+  color: #666;
 }
 
-#modal-input {
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 8px;
-  font-size: 1em;
-  resize: vertical;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-#modal-form input[type="submit"] {
+/*Shared solid-color button pattern - variants differ only in background/text color*/
+.btn {
   padding: 8px 16px;
   font-size: 1em;
-  cursor: pointer;
-  border-radius: 4px;
-  background: blue;
-  color: white;
-  width: 100px;
-}
-
-#modal button {
-  border: 2px solid blue;
-  border-radius: 4px;
-  color: black;
-  background-color: white;
-}
-
-/*Study / flashcard styles*/
-.study-header {
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.card-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.card-form label {
-  font-weight: bold;
-  margin-bottom: 4px;
-}
-
-.card-form input.side-a-input {
-  padding: 8px;
-  font-size: 1em;
-  border-radius: 8px;
-  border-color: gray;
-  margin-bottom: 16px;
-}
-
-.card-form textarea.side-b-input {
-  padding: 8px;
-  font-size: 1em;
-  border-radius: 8px;
-  border-color: gray;
-  height: 200px;
-}
-
-.card-form button.card-submit {
-  padding: 8px;
-  font-size: 1em;
-  border: 2px solid black;
-  border-radius: 8px;
-  background: blue;
-  color: white;
   font-weight: 900;
+  border: 2px solid black;
+  border-radius: 4px;
   cursor: pointer;
-  width: 100px;
-  height: auto;
-  margin-top: 16px;
-  margin-left: auto;
+  white-space: nowrap;
 }
 
-#flashcards {
-  display: flex;
-  flex-direction: column;
+.btn-blue {
+  background: blue;
+  color: white;
 }
 
-.flashcard {
+.btn-red {
   background: white;
-  padding: 12px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  text-align: left;
-  font-size: 1em;
-  border-radius: 8px;
-  border-color: gray;
+  color: black;
 }
 
-#card-modal {
+.btn-black {
+  background: black;
+  color: white;
+}
+
+.card-composer-submit {
+  align-self: flex-end;
+  padding: 8px 20px;
+  height: auto;
+}
+
+.card-dialog {
+  position: relative;
   padding: 32px;
   max-width: 500px;
   width: 90%;
-  border: none;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-#card-modal::backdrop {
+.card-dialog::backdrop {
   background: rgba(0, 0, 0, 0.5);
 }
 
-#card-modal-label {
-  font-weight: bold;
-  text-transform: uppercase;
-  margin-bottom: 4px;
+.card-dialog-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  line-height: 1;
 }
 
-#card-modal-text {
+.card-dialog-text {
   font-size: 1.2em;
 }
 
-#card-modal-form {
+.card-dialog-meta {
+  margin-bottom: 8px;
+}
+
+.card-dialog-actions {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-dialog-actions .card-composer-submit {
+  align-self: center;
+  margin-left: auto;
+}
+
+.card-dialog-form {
   margin-top: 16px;
   display: flex;
   flex-direction: column;
 }
 
-#card-modal-form label {
-  font-weight: bold;
-  margin-bottom: 4px;
+/*The `hidden` attribute and this class have equal specificity, and author
+  rules win ties over the UA stylesheet - without this, a hidden .card-dialog-form
+  would still render via this class's own `display: flex`.*/
+.card-dialog-form[hidden] {
+  display: none;
 }
 
-#card-modal-form input,
-#card-modal-form textarea {
+.card-dialog-input {
   width: 100%;
   padding: 8px;
   margin-bottom: 8px;
@@ -447,21 +399,108 @@ span.v {
   border-radius: 4px;
 }
 
-#card-modal-form input[type="submit"] {
-  padding: 8px 16px;
-  font-size: 1em;
-  cursor: pointer;
-  border-radius: 4px;
-  background: blue;
-  color: white;
-  width: 100px;
+
+/*Study / flashcard styles - reuses the shared Notes card system (.card-feed,
+  .card-tile, .btn variants, .card-dialog*), adding only the flip interaction
+  and a New Card button that opens the shared create/edit modal*/
+#card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-#card-modal button {
-  border: 2px solid blue;
-  border-radius: 4px;
-  color: black;
-  background-color: white;
+.card-dialog-form label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+#new-card-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1.05em;
+}
+
+/*Takes the New Card button's exact slot/width when opened, so it reads as
+  the button itself extending downward into a form rather than a separate
+  popup*/
+#new-card-form {
+  margin-top: 0;
+}
+
+#new-note-btn {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1.05em;
+}
+
+/*Same button-becomes-form pattern as Study's #new-card-btn/#new-card-form*/
+#new-note-form {
+  margin-top: 0;
+}
+
+.flashcard-flip {
+  display: block;
+  width: 100%;
+  min-height: 108px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.flashcard-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 108px;
+}
+
+.flashcard-face {
+  display: none;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.flashcard-face--front {
+  display: flex;
+}
+
+.flashcard-flip.is-flipped .flashcard-face--front {
+  display: none;
+}
+
+.flashcard-flip.is-flipped .flashcard-face--back {
+  display: flex;
+}
+
+.flashcard-label {
+  display: block;
+  font-size: 0.75em;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.flashcard-reference {
+  display: block;
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+.flashcard-scripture {
+  display: -webkit-box;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  line-clamp: 4;
+  overflow: hidden;
 }
 
 @media (width <=320px) {
@@ -483,30 +522,23 @@ span.v {
     padding: 4px 0;
   }
 
-  .note-form textarea.note-input {
-    height: 120px;
-    font-size: 0.95em;
-  }
-
-  .note-form button.note-submit {
-    width: 80px;
+  .card-composer-submit {
     font-size: 0.9em;
-    padding: 6px;
+    padding: 6px 12px;
   }
 
-  .note {
+  .card-tile--entry {
     padding: 8px;
-    margin-bottom: 8px;
     font-size: 0.9em;
   }
 
-  #modal {
+  .card-dialog {
     padding: 20px;
     max-width: 95vw;
     font-size: 0.95em;
   }
 
-  #modal-input {
+  .card-dialog-input {
     font-size: 0.95em;
     height: 120px;
   }
@@ -535,27 +567,20 @@ span.v {
     font-size: 0.9em;
   }
 
-  .note-form textarea.note-input {
-    height: 150px;
-    font-size: 1em;
-  }
-
-  .note-form button.note-submit {
-    width: 90px;
+  .card-composer-submit {
     font-size: 0.95em;
   }
 
-  .note {
+  .card-tile--entry {
     padding: 10px;
-    margin-bottom: 10px;
   }
 
-  #modal {
+  .card-dialog {
     padding: 24px;
     max-width: 90vw;
   }
 
-  #modal-input {
+  .card-dialog-input {
     height: 150px;
   }
 
@@ -595,20 +620,12 @@ span.v {
     max-width: 95%;
   }
 
-  .note-form textarea.note-input {
-    height: 180px;
-  }
-
-  .note-form button.note-submit {
-    width: 100px;
-  }
-
-  #modal {
+  .card-dialog {
     padding: 28px;
     max-width: 85vw;
   }
 
-  #modal-input {
+  .card-dialog-input {
     height: 180px;
   }
 

@@ -32,33 +32,45 @@
   </div>
 
   <main class="container">
-    <div id="form">
-      <form class="note-form">
-        <textarea id="note-input" class="note-input" placeholder="Enter note here.."></textarea>
-        <button class="note-submit" type="submit">Enter</button>
+    <div id="notes" class="card-feed">
+      <button type="button" id="new-note-btn" class="btn btn-blue">+ New Note</button>
+
+      <form id="new-note-form" class="card-tile card-dialog-form" hidden>
+        <textarea id="new-note-input" class="card-dialog-input" rows="4" placeholder="Enter note here.." required></textarea>
+        <div class="card-dialog-actions">
+          <button type="button" id="new-note-cancel-btn" class="btn btn-red">Cancel</button>
+          <button type="submit" class="card-composer-submit btn btn-blue">Add Note</button>
+        </div>
       </form>
+
+      <div id="note-list"></div>
     </div>
 
     <template id="note-template">
-      <button class="note">
-        <p></p>
+      <button class="card-tile card-tile--entry" type="button">
+        <p class="card-preview-text"></p>
+        <div class="card-meta"><span class="card-date"></span></div>
       </button>
     </template>
 
-    <dialog id="modal">
-      <p id="modal-note-text"></p>
-      <div id="modal-actions">
-        <button type="button" id="modal-edit-btn">Edit</button>
-        <button type="button" id="modal-delete-btn">[X] Delete</button>
-        <button type="button" id="modal-exit-btn">Exit</button>
+    <dialog id="view-modal" class="card-dialog">
+      <button type="button" id="view-modal-close-btn" class="card-dialog-close btn btn-red" aria-label="Close">&times;</button>
+      <p id="view-modal-text" class="card-dialog-text"></p>
+      <div class="card-dialog-actions">
+        <button type="button" id="view-modal-edit-btn" class="btn btn-black">Edit</button>
       </div>
-      <form id="modal-form" hidden>
-        <textarea id="modal-input" rows="6"></textarea>
-        <input type="submit" value="Enter">
-      </form>
     </dialog>
 
-    <div id="notes"></div>
+    <dialog id="modal" class="card-dialog">
+      <button type="button" id="modal-close-btn" class="card-dialog-close btn btn-red" aria-label="Close">&times;</button>
+      <form id="modal-form" class="card-dialog-form">
+        <textarea id="modal-input" class="card-dialog-input" rows="6" required></textarea>
+        <div class="card-dialog-actions">
+          <button type="button" id="modal-delete-btn" class="btn btn-red">Delete</button>
+          <button type="submit" class="card-composer-submit btn btn-blue">Save</button>
+        </div>
+      </form>
+    </dialog>
   </main>
 
 </body>

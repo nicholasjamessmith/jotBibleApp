@@ -32,43 +32,63 @@
   </div>
 
   <main class="container">
-    <div id="form">
-      <form class="card-form">
-        <label for="side-a-input">Reference</label>
-        <input id="side-a-input" class="side-a-input" type="text" placeholder="e.g. John 3:16" required>
-        <label for="side-b-input">Scripture</label>
-        <textarea id="side-b-input" class="side-b-input"
+    <div id="flashcards" class="card-feed">
+      <button type="button" id="new-card-btn" class="btn btn-blue">+ New Card</button>
+
+      <form id="new-card-form" class="card-tile card-dialog-form" hidden>
+        <label for="new-card-side-a">Reference</label>
+        <input id="new-card-side-a" class="card-dialog-input" type="text" placeholder="e.g. John 3:16" required>
+        <label for="new-card-side-b">Scripture</label>
+        <textarea id="new-card-side-b" class="card-dialog-input" rows="4"
           placeholder="e.g. For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life."
           required></textarea>
-        <button class="card-submit" type="submit">Add Card</button>
+        <div class="card-dialog-actions">
+          <button type="button" id="new-card-cancel-btn" class="btn btn-red">Cancel</button>
+          <button type="submit" class="card-composer-submit btn btn-blue">Add Card</button>
+        </div>
       </form>
+
+      <div id="card-list"></div>
     </div>
 
     <template id="card-template">
-      <button class="flashcard">
-        <p class="flashcard-reference"></p>
+      <button type="button" class="card-tile card-tile--entry">
+        <span class="flashcard-reference"></span>
       </button>
     </template>
 
-    <dialog id="card-modal">
-      <p id="card-modal-label"></p>
-      <p id="card-modal-text"></p>
-      <div id="card-modal-actions">
-        <button type="button" id="card-flip-btn">Flip</button>
-        <button type="button" id="card-edit-btn">Edit</button>
-        <button type="button" id="card-delete-btn">[X] Delete</button>
-        <button type="button" id="card-exit-btn">Exit</button>
+    <dialog id="view-modal" class="card-dialog">
+      <button type="button" id="view-modal-close-btn" class="card-dialog-close btn btn-red" aria-label="Close">&times;</button>
+      <button type="button" id="view-modal-flip" class="flashcard-flip">
+        <span class="flashcard-inner">
+          <span class="flashcard-face flashcard-face--front">
+            <span class="flashcard-label">Reference</span>
+            <span id="view-modal-reference" class="flashcard-reference"></span>
+          </span>
+          <span class="flashcard-face flashcard-face--back">
+            <span class="flashcard-label">Scripture</span>
+            <span id="view-modal-scripture" class="flashcard-scripture"></span>
+          </span>
+        </span>
+      </button>
+      <div class="card-dialog-actions">
+        <button type="button" id="view-modal-edit-btn" class="btn btn-black">Edit</button>
       </div>
-      <form id="card-modal-form" hidden>
-        <label for="card-modal-side-a">Reference</label>
-        <input id="card-modal-side-a" type="text">
-        <label for="card-modal-side-b">Scripture</label>
-        <textarea id="card-modal-side-b" rows="6"></textarea>
-        <input type="submit" value="Save">
-      </form>
     </dialog>
 
-    <div id="flashcards"></div>
+    <dialog id="card-modal" class="card-dialog">
+      <button type="button" id="card-modal-close-btn" class="card-dialog-close btn btn-red" aria-label="Close">&times;</button>
+      <form id="card-modal-form" class="card-dialog-form">
+        <label for="card-modal-side-a">Reference</label>
+        <input id="card-modal-side-a" class="card-dialog-input" type="text" required>
+        <label for="card-modal-side-b">Scripture</label>
+        <textarea id="card-modal-side-b" class="card-dialog-input" rows="6" required></textarea>
+        <div class="card-dialog-actions">
+          <button type="button" id="card-delete-btn" class="btn btn-red">Delete</button>
+          <button type="submit" class="card-composer-submit btn btn-blue">Save</button>
+        </div>
+      </form>
+    </dialog>
   </main>
 
 </body>

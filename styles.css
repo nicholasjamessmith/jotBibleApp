@@ -179,6 +179,7 @@ span.v {
 
 /*Search form styles*/
 #search-form {
+  position: relative;
   display: flex;
   gap: 8px;
   align-items: center;
@@ -201,6 +202,47 @@ span.v {
   color: white;
   font-weight: 900;
   cursor: pointer;
+}
+
+#search-results {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 10;
+  max-height: 320px;
+  width: 320px;
+  max-width: calc(100vw - 16px);
+  overflow-y: auto;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  background: white;
+  border: 1px solid gray;
+  border-radius: 8px;
+}
+
+#search-results:empty {
+  display: none;
+  border: none;
+}
+
+#search-results li {
+  border-bottom: 1px solid #eee;
+}
+
+#search-results li:last-child {
+  border-bottom: none;
+}
+
+#search-results a {
+  display: block;
+  padding: 8px;
+  color: black;
+  text-decoration: none;
+}
+
+#search-results a:hover {
+  background: #f0f0f0;
 }
 
 .notes-header {

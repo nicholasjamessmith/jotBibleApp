@@ -18,11 +18,16 @@
     <h1>
       <a class="flex" href="/">jotBible</a>
     </h1>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle">
+    <label for="nav-toggle" class="nav-toggle-label" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </label>
     <div class="nav">
       <a href="book.html" class="translation-select-label">Book</a>
       <a class="flex" href="/study.html" aria-current="page">Study</a>
       <a class="flex" href="/notes.html">Notes</a>
     </div>
+    <label for="nav-toggle" class="nav-backdrop" aria-hidden="true"></label>
     <form id="search-form">
       <input id="search-input" title="search" label="search" placeholder="Search" type="text">
       <input title="submit" label="submit" type="submit">

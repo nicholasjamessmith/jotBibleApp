@@ -67,6 +67,7 @@ h1 {
 }
 
 header {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -83,6 +84,56 @@ header {
   align-items: center;
   justify-content: space-around;
   flex-wrap: wrap;
+}
+
+/*Hamburger toggle - markup only present on the 7 pages that share the unified
+  header (logo + nav + search in one row). Hidden on desktop; the mobile media
+  query below turns the label into a visible icon and hides .nav until the
+  checkbox is checked. Visually hidden rather than display:none so it stays
+  reachable via its <label for> click target and by keyboard.*/
+.nav-toggle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.nav-toggle-label {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 32px;
+  height: 32px;
+  padding: var(--space-1);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.nav-toggle-label:hover {
+  background: #f0f0f0;
+}
+
+.nav-toggle:focus-visible + .nav-toggle-label {
+  outline: 2px solid var(--color-blue);
+  outline-offset: 2px;
+}
+
+.nav-toggle-label span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: var(--color-black);
+  border-radius: 2px;
+}
+
+.nav-backdrop {
+  display: none;
 }
 
 .nav a {
@@ -762,12 +813,73 @@ span.v {
     font-size: 1.4em;
   }
 
-  .nav {
-    gap: 12px;
+  /*Unified-header pages only (body.home has no .nav-toggle markup, so this
+    never applies to the homepage hero menu below).*/
+  .nav-toggle-label {
+    display: flex;
+    order: 1;
+  }
+
+  /*Scoped to body:not(.home) so this can never fight body.home .nav (the
+    hero menu) over `display` - same specificity, but the two selectors
+    never match the same element, so there's no tie to break.*/
+  body:not(.home) .nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
+    margin-top: var(--space-2);
+    padding: var(--space-2);
+    background: var(--color-white);
+    border: 1px solid gray;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+  }
+
+  .nav-toggle:checked ~ .nav {
+    display: flex;
+  }
+
+  .nav-toggle:checked ~ .nav-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 15;
+    cursor: default;
   }
 
   .nav a {
     font-size: 0.9em;
+    padding: var(--space-3);
+    text-align: center;
+  }
+
+  /*Search stays in the same place and at the same width on every page at
+    this width, whether or not that page also has the hamburger nav.*/
+  #search-form {
+    order: 2;
+    width: 100%;
+  }
+
+  #search-input {
+    flex: 1;
+    min-width: 0;
+  }
+
+  body.home .nav {
+    gap: var(--space-4);
+  }
+
+  body.home .nav > a {
+    font-size: clamp(1.75rem, 12vw, 3rem);
+    padding: var(--space-2) var(--space-3);
+    text-align: center;
   }
 
   .card-composer-submit {

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+
 /*GLOBAL STYLES*/
 :root {
   --color-blue: blue;
@@ -519,7 +521,7 @@ span.v {
 
 .card-preview-text {
   margin: 0;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -747,7 +749,7 @@ span.v {
 
 .flashcard-scripture {
   display: -webkit-box;
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   line-clamp: 4;

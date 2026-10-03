@@ -32,5 +32,4 @@ getBooksCached(bibleVersionID).then((books) => {
     NTList.appendChild(li);
   }
   document.getElementById('OT').appendChild(OTList);
-  document.getElementById('NT').appendChild(NTList);
-});
+  document.getElementById('NT').appendChild(NTList);});

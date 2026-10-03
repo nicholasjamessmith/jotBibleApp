@@ -2,12 +2,24 @@
 
 /*GLOBAL STYLES*/
 :root {
-  --color-blue: blue;
+  --color-blue: var(--color-soft-blue-dark);
   --color-black: black;
   --color-white: white;
   --color-border: #ddd;
   --color-border-strong: black;
   --color-muted: #666;
+  /*Soft palette - blue is the action color, green is secondary. The base
+    and dark shades pass WCAG AA with white text; the tints are for
+    backgrounds (pair them with the dark shade for text).*/
+  --color-soft-blue: #3b6fc4;
+  --color-soft-blue-dark: #2f5ca3;
+  --color-soft-blue-tint: #eaf1fb;
+  --color-soft-green: #3a7d5a;
+  --color-soft-green-dark: #2f6b4b;
+  --color-soft-green-tint: #e6f3ec;
+  --color-soft-black: #1c1c1c;
+  --color-action: var(--color-soft-blue);
+  --color-secondary: var(--color-soft-green);
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 8px;
@@ -53,6 +65,7 @@ a[aria-current="page"] {
 }
 
 body {
+  margin: 0;
   font-family: var(--font-sans);
 }
 
@@ -76,7 +89,6 @@ h1 {
   margin: 0 auto;
   padding: 0 var(--space-5);
 }
-
 header {
   position: relative;
   display: flex;
@@ -86,6 +98,7 @@ header {
   width: 100%;
   padding: 0 var(--space-5);
   margin-bottom: 20px;
+  background: var(--color-soft-green-tint);
   gap: var(--space-3);
 }
 
@@ -127,7 +140,7 @@ header {
 }
 
 .nav-toggle-label:hover {
-  background: #f0f0f0;
+  background: var(--color-soft-blue-tint);
 }
 
 .nav-toggle:focus-visible + .nav-toggle-label {
@@ -151,18 +164,20 @@ header {
   font-size: 1.2em;
   font-weight: 600;
   padding: var(--space-1) var(--space-2);
+  border: 1px solid transparent;
   border-radius: var(--radius-sm);
 }
 
 .nav a:hover {
   text-decoration: none;
-  background: #f0f0f0;
+  background: var(--color-soft-blue-tint);
 }
 
 .nav a[aria-current="page"] {
   color: var(--color-blue);
   text-decoration: none;
-  background: #f0f0f0;
+  background: var(--color-soft-blue-tint);
+  border-color: var(--color-soft-blue);
 }
 
 /*Homepage hero menu - on every other page, .nav (Book/Study/Notes) lives
@@ -200,16 +215,32 @@ body.home .nav > a {
   gap: var(--space-6);
 }
 
+/*Each testament is a card with a tinted header band*/
 .OTWrapper,
 .NTWrapper {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
 }
 
 .OTWrapper h2,
 .NTWrapper h2 {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--color-soft-green-tint);
+  color: var(--color-soft-green-dark);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .OT,
@@ -219,7 +250,8 @@ body.home .nav > a {
   list-style-type: none;
   align-items: flex-start;
   overflow-wrap: normal;
-  padding: 0;
+  margin: 0;
+  padding: var(--space-2);
   width: 100%;
 }
 
@@ -231,12 +263,12 @@ body.home .nav > a {
 }
 
 .book-link:hover {
-  background: #f0f0f0;
+  background: var(--color-soft-blue-tint);
 }
 
 .book-link a {
   display: block;
-  flex-shrink: 0;
+  flex: 1;
   padding: var(--space-2) var(--space-3);
 }
 
@@ -333,7 +365,7 @@ span.v {
 #verse-list .verse.underline {
   text-decoration: underline;
   text-decoration-style: solid;
-  text-decoration-color: var(--color-blue);
+  text-decoration-color: var(--color-soft-blue);
   text-decoration-thickness: 2px;
 }
 
@@ -343,7 +375,7 @@ span.v {
 #verse-list .verse.selected {
   text-decoration: underline;
   text-decoration-style: dashed;
-  text-decoration-color: var(--color-blue);
+  text-decoration-color: var(--color-soft-blue);
   text-decoration-thickness: 2px;
 }
 
@@ -381,13 +413,13 @@ span.v {
 }
 
 #highlight-underline-btn {
-  border: 2px solid var(--color-blue);
-  background: var(--color-blue);
+  border: 2px solid var(--color-soft-blue);
+  background: var(--color-soft-blue);
   color: var(--color-white);
 }
 
 #highlight-remove-btn {
-  border: 2px dashed var(--color-blue);
+  border: 2px dashed var(--color-soft-blue);
 }
 
 #highlight-copy-btn {
@@ -417,7 +449,7 @@ span.v {
   font-size: 1em;
   border: 2px solid var(--color-border-strong);
   border-radius: var(--radius-lg);
-  background: var(--color-black);
+  background: var(--color-soft-blue-dark);
   color: var(--color-white);
   font-weight: 900;
   cursor: pointer;
@@ -474,7 +506,7 @@ span.v {
 }
 
 #search-results a:hover {
-  background: #f0f0f0;
+  background: var(--color-soft-blue-tint);
   text-decoration: none;
 }
 
@@ -658,7 +690,7 @@ span.v {
 
 .card-dialog-input:focus-visible {
   border-color: var(--color-blue);
-  box-shadow: 0 0 0 3px rgba(0, 0, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(47, 92, 163, 0.15);
 }
 
 

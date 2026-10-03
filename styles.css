@@ -61,6 +61,15 @@ h1 {
   text-decoration: underline 4px solid var(--color-blue);
 }
 
+/*Inline SVG icons (Lucide) - sized to the surrounding text*/
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  margin-left: 0.35em;
+  flex-shrink: 0;
+}
+
 .container {
   width: 100%;
   max-width: 800px;
@@ -139,6 +148,7 @@ header {
 }
 
 .nav a {
+  font-size: 1.2em;
   font-weight: 600;
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
@@ -187,6 +197,7 @@ body.home .nav > a {
   flex-direction: row;
   overflow-x: hidden;
   padding: 0;
+  gap: var(--space-6);
 }
 
 .OTWrapper,
@@ -231,14 +242,6 @@ body.home .nav > a {
 
 .book-link a:hover {
   text-decoration: none;
-}
-
-.book-link::before {
-  content: "....................................";
-  flex: 1;
-  margin: 0px 5px;
-  border-bottom: 2px dotted black;
-  order: 1;
 }
 
 #chapter-list {
@@ -407,7 +410,9 @@ span.v {
   font-family: var(--font-sans);
 }
 
-#search-form input[type="submit"] {
+#search-form button[type="submit"] {
+  display: flex;
+  align-items: center;
   padding: var(--space-2) var(--space-4);
   font-size: 1em;
   border: 2px solid var(--color-border-strong);
@@ -420,8 +425,12 @@ span.v {
   transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 
-#search-form input[type="submit"]:hover {
+#search-form button[type="submit"]:hover {
   transform: translateY(-1px);
+}
+
+#search-form button[type="submit"] .icon {
+  margin-left: 0;
 }
 
 #search-results {
@@ -771,7 +780,7 @@ span.v {
   }
 
   .nav a {
-    font-size: 0.85em;
+    font-size: 1.05em;
     padding: 4px 0;
   }
 
@@ -857,7 +866,7 @@ span.v {
   }
 
   .nav a {
-    font-size: 0.9em;
+    font-size: 1.1em;
     padding: var(--space-3);
     text-align: center;
   }
@@ -922,12 +931,6 @@ span.v {
   overflow-wrap: normal;
 }*/
 
-  .book-link::before {
-    content: ".......................";
-    flex: 1;
-    margin: 0px 5px;
-  }
-
 }
 
 @media (width <=1200px) {
@@ -947,12 +950,6 @@ span.v {
 
   #book-list ul {
     column-count: 2;
-  }
-
-  .book-link::before {
-    content: "..........";
-    flex: 1;
-    margin: 0px 5px;
   }
 }
 

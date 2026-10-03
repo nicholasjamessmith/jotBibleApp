@@ -51,30 +51,11 @@
     </div>
 
     <template id="note-template">
-      <button class="card-tile card-tile--entry" type="button">
+      <a class="card-tile card-tile--entry">
         <p class="card-preview-text"></p>
         <div class="card-meta"><span class="card-date"></span></div>
-      </button>
+      </a>
     </template>
-
-    <dialog id="view-modal" class="card-dialog">
-      <button type="button" id="view-modal-close-btn" class="card-dialog-close btn btn-red" aria-label="Close">&times;</button>
-      <p id="view-modal-text" class="card-dialog-text"></p>
-      <div class="card-dialog-actions">
-        <button type="button" id="view-modal-edit-btn" class="btn btn-black">Edit</button>
-      </div>
-    </dialog>
-
-    <dialog id="modal" class="card-dialog">
-      <button type="button" id="modal-close-btn" class="card-dialog-close btn btn-red" aria-label="Close">&times;</button>
-      <form id="modal-form" class="card-dialog-form">
-        <textarea id="modal-input" class="card-dialog-input" rows="6" required></textarea>
-        <div class="card-dialog-actions">
-          <button type="button" id="modal-delete-btn" class="btn btn-red">Delete</button>
-          <button type="submit" class="card-composer-submit btn btn-blue">Save</button>
-        </div>
-      </form>
-    </dialog>
   </main>
 
 </body>

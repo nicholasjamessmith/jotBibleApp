@@ -560,6 +560,28 @@ span.v {
   transform: translateY(-1px);
 }
 
+/*Note tiles are links to their own page, not buttons*/
+a.card-tile--entry,
+a.card-tile--entry:hover {
+  text-decoration: none;
+}
+
+/*Single-note page (note-view.html)*/
+.note-back {
+  display: inline-block;
+  margin-bottom: var(--space-4);
+  font-weight: 600;
+}
+
+.note-page {
+  margin-top: 0;
+}
+
+.note-page .card-dialog-text {
+  margin-top: 0;
+  line-height: 1.6;
+}
+
 .card-preview-text {
   margin: 0;
   font-family: var(--font-sans);
@@ -623,33 +645,8 @@ span.v {
   height: auto;
 }
 
-.card-dialog {
-  position: relative;
-  padding: var(--space-6);
-  max-width: 500px;
-  width: 90%;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-}
-
-.card-dialog::backdrop {
-  background: rgba(0, 0, 0, 0.5);
-}
-
-.card-dialog-close {
-  position: absolute;
-  top: var(--space-2);
-  right: var(--space-2);
-  line-height: 1;
-}
-
 .card-dialog-text {
   font-size: 1.2em;
-}
-
-.card-dialog-meta {
-  margin-bottom: var(--space-2);
 }
 
 .card-dialog-actions {
@@ -693,10 +690,9 @@ span.v {
   box-shadow: 0 0 0 3px rgba(47, 92, 163, 0.15);
 }
 
-
 /*Study / flashcard styles - reuses the shared Notes card system (.card-feed,
-  .card-tile, .btn variants, .card-dialog*), adding only the flip interaction
-  and a New Card button that opens the shared create/edit modal*/
+  .card-tile, .btn variants, .card-dialog-* form pieces), adding only the flip
+  interaction (on flashcard-view.html) and the New Card button*/
 #card-list {
   display: flex;
   flex-direction: column;
@@ -797,6 +793,26 @@ span.v {
   overflow: hidden;
 }
 
+/*Single-flashcard page (flashcard-view.html) - more room, full scripture*/
+.flashcard-page .flashcard-flip,
+.flashcard-page .flashcard-inner {
+  min-height: 200px;
+}
+
+.flashcard-page .flashcard-scripture {
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: none;
+  overflow: visible;
+  line-height: 1.6;
+}
+
+.flashcard-hint {
+  margin: 0;
+  font-size: 0.8em;
+  color: var(--color-muted);
+}
+
 @media (width <=320px) {
   .container {
     padding: 0 8px;
@@ -824,12 +840,6 @@ span.v {
   .card-tile--entry {
     padding: 8px;
     font-size: 0.9em;
-  }
-
-  .card-dialog {
-    padding: 20px;
-    max-width: 95vw;
-    font-size: 0.95em;
   }
 
   .card-dialog-input {
@@ -933,11 +943,6 @@ span.v {
     padding: 10px;
   }
 
-  .card-dialog {
-    padding: 24px;
-    max-width: 90vw;
-  }
-
   .card-dialog-input {
     height: 150px;
   }
@@ -969,11 +974,6 @@ span.v {
   .container {
     padding: 0 20px;
     max-width: 95%;
-  }
-
-  .card-dialog {
-    padding: 28px;
-    max-width: 85vw;
   }
 
   .card-dialog-input {

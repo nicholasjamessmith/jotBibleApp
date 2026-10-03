@@ -228,6 +228,11 @@ const getAllNotes = async () => {
   return idbGetAll('notes');
 }
 
+const getNote = async (id) => {
+  await migrateLegacyNotes();
+  return idbGet('notes', id);
+}
+
 const saveNote = (note) => {
   if (!note.id) note.id = crypto.randomUUID();
   if (!note.createdAt) note.createdAt = Date.now();
@@ -242,6 +247,11 @@ const deleteNote = (id) => idbDelete('notes', id);
 const getAllFlashcards = async () => {
   await migrateLegacyFlashcards();
   return idbGetAll('flashcards');
+}
+
+const getFlashcard = async (id) => {
+  await migrateLegacyFlashcards();
+  return idbGet('flashcards', id);
 }
 
 const saveFlashcard = (card) => {
@@ -276,7 +286,7 @@ const deleteConnection = (id) => idbDelete('verseConnections', id);
 
 export {
   getBooksCached, getChaptersCached, getChapterContentCached,
-  getAllNotes, saveNote, deleteNote,
-  getAllFlashcards, saveFlashcard, deleteFlashcard,
+  getAllNotes, getNote, saveNote, deleteNote,
+  getAllFlashcards, getFlashcard, saveFlashcard, deleteFlashcard,
   getConnectionsForVerseIds, saveConnection, deleteConnection,
 };

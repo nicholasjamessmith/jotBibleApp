@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
   <script type="module" src="scripture-api.js"></script>
-  <script type="module" src="study.js"></script>
+  <script type="module" src="flashcard-view.js"></script>
   <script type="module" src="./search.js"></script>
 
-  <title>Study</title>
+  <title>View Flashcard</title>
 </head>
 
 <body>
@@ -36,30 +36,40 @@
   </header>
 
   <main class="container">
-    <div id="flashcards" class="card-feed">
-      <button type="button" id="new-card-btn" class="btn btn-blue">+ New Card</button>
+    <a href="study.html" class="note-back">&larr; All flashcards</a>
 
-      <form id="new-card-form" class="card-tile card-dialog-form" hidden>
-        <label for="new-card-side-a">Reference</label>
-        <input id="new-card-side-a" class="card-dialog-input" type="text" placeholder="e.g. John 3:16" required>
-        <label for="new-card-side-b">Scripture</label>
-        <textarea id="new-card-side-b" class="card-dialog-input" rows="4"
-          placeholder="e.g. For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life."
-          required></textarea>
-        <div class="card-dialog-actions">
-          <button type="button" id="new-card-cancel-btn" class="btn btn-red">Cancel</button>
-          <button type="submit" class="card-composer-submit btn btn-blue">Add Card</button>
-        </div>
-      </form>
+    <p id="card-not-found" hidden>This flashcard doesn't exist or was deleted.</p>
 
-      <div id="card-list"></div>
-    </div>
+    <article id="card-view" class="card-tile flashcard-page" hidden>
+      <button type="button" id="card-flip" class="flashcard-flip" aria-label="Flip card">
+        <span class="flashcard-inner">
+          <span class="flashcard-face flashcard-face--front">
+            <span class="flashcard-label">Reference</span>
+            <span id="card-reference" class="flashcard-reference"></span>
+          </span>
+          <span class="flashcard-face flashcard-face--back">
+            <span class="flashcard-label">Scripture</span>
+            <span id="card-scripture" class="flashcard-scripture"></span>
+          </span>
+        </span>
+      </button>
+      <p class="flashcard-hint">Tap the card to flip it</p>
+      <div class="card-dialog-actions">
+        <button type="button" id="card-edit-btn" class="btn btn-black">Edit</button>
+      </div>
+    </article>
 
-    <template id="card-template">
-      <a class="card-tile card-tile--entry">
-        <span class="flashcard-reference"></span>
-      </a>
-    </template>
+    <form id="card-edit-form" class="card-tile card-dialog-form note-page" hidden>
+      <label for="card-edit-side-a">Reference</label>
+      <input id="card-edit-side-a" class="card-dialog-input" type="text" required>
+      <label for="card-edit-side-b">Scripture</label>
+      <textarea id="card-edit-side-b" class="card-dialog-input" rows="8" required></textarea>
+      <div class="card-dialog-actions">
+        <button type="button" id="card-delete-btn" class="btn btn-red">Delete</button>
+        <button type="button" id="card-cancel-btn" class="btn btn-red">Cancel</button>
+        <button type="submit" class="card-composer-submit btn btn-blue">Save</button>
+      </div>
+    </form>
   </main>
 
 </body>

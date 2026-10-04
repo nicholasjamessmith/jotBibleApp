@@ -85,6 +85,17 @@
     background: #262626;
   }
 
+  /*Search field - the one header element that goes dark: muted black field with
+    light text and placeholder (the rest of the header keeps its light colors)*/
+  #search-input {
+    background: #1c1c1c;
+    color: white;
+  }
+
+  #search-input::placeholder {
+    color: #a0a0a0;
+  }
+
   /*Homepage exception - its content is the hero nav, which sits on the page body
     below the header, so it gets the same muted black with white links and a dark
     hover tint. The header itself still keeps its light colors.*/
@@ -848,7 +859,58 @@ a.card-tile--entry:hover {
 .note-page .card-dialog-text {
   margin-top: 0;
   line-height: 1.6;
-  white-space: pre-wrap; /*keeps the note's line breaks now that it renders text + citation links*/
+}
+
+/*Rendered note markdown (note-markdown.js) - tidy block spacing inside the card*/
+.note-body > :first-child {
+  margin-top: 0;
+}
+
+.note-body > :last-child {
+  margin-bottom: 0;
+}
+
+.note-body p {
+  margin: 0 0 var(--space-3);
+}
+
+.note-body ul,
+.note-body ol {
+  margin: 0 0 var(--space-3);
+  padding-left: 1.4em;
+}
+
+.note-body li + li {
+  margin-top: var(--space-1);
+}
+
+/*Fallback when the markdown libraries didn't load - plain text with its line breaks*/
+.note-body.note-plain {
+  white-space: pre-wrap;
+}
+
+/*Formatting toolbar above note textareas*/
+.md-toolbar {
+  display: flex;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+
+.md-toolbar-btn {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 var(--space-2);
+  font: inherit;
+  font-weight: 700;
+  border: 1px solid var(--color-border-input);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  color: var(--color-black);
+  cursor: pointer;
+}
+
+.md-toolbar-btn:hover {
+  background: var(--color-soft-blue-tint);
 }
 
 /*Verse references in notes/flashcards, linking into the reader (verse-links.js)*/

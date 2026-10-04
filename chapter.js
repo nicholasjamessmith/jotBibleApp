@@ -23,7 +23,7 @@ getBooksCached(bibleVersionID).then((books) => {
   const book = books?.find((b) => b.id === bibleBookID);
   const title = book ? book.name : bibleBookID;
   document.querySelector('#book-title').textContent = title;
-  document.title = title;
+  document.title = `${title} | jotBible`;
 }).catch(() => {
   document.querySelector('#book-title').textContent = bibleBookID;
 });

@@ -5,12 +5,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/marked/18.0.14/lib/marked.umd.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.4.16/purify.min.js"></script>
   <script type="module" src="scripture-api.js"></script>
   <script type="module" src="note-view.js"></script>
   <script type="module" src="./search.js"></script>
   <script type="module" src="tab-state.js"></script>
 
-  <title>View Note</title>
+  <title>View Note | jotBible</title>
 </head>
 
 <body>
@@ -42,7 +44,7 @@
     <p id="note-not-found" hidden>This note doesn't exist or was deleted.</p>
 
     <article id="note-view" class="card-tile note-page" hidden>
-      <p id="note-text" class="card-dialog-text"></p>
+      <div id="note-text" class="card-dialog-text note-body"></div>
       <div class="card-meta"><span id="note-date" class="card-date"></span></div>
       <div class="card-dialog-actions">
         <button type="button" id="note-edit-btn" class="btn btn-black">Edit</button>

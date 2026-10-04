@@ -29,27 +29,36 @@ const citationHref = (citation) => {
   return `verse.html?chapter=${encodeURIComponent(chapterId)}&verse=${encodeURIComponent(verseIds.join(','))}`;
 }
 
-//Shows text in el with each citation turned into a reader link. Plain text renders
-//immediately; links are swapped in once the book list resolves. (el needs white-space: pre-wrap.)
-const renderWithCitationLinks = async (el, text) => {
-  el.textContent = text;
-  const citations = await findCitations(text);
-  if (!citations || citations.length === 0) return;
-  if (el.textContent !== text) return; // re-rendered with newer text while books loaded
+//Turns each citation in el's rendered text into a reader link, in place. Walks text nodes so
+//it works on rendered markdown (lists, bold, etc.); text already inside a link or code block
+//is left alone. Resolves once links are in (the book list may need to load first).
+const linkCitationsIn = async (el) => {
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+    acceptNode: (node) => (node.parentElement.closest('a, code, pre') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
+  });
+  const textNodes = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode);
 
-  const fragment = document.createDocumentFragment();
-  let cursor = 0;
-  for (const citation of citations) {
-    fragment.append(text.slice(cursor, citation.index));
-    const link = document.createElement('a');
-    link.href = citationHref(citation);
-    link.className = 'citation-link';
-    link.textContent = citation.text;
-    fragment.append(link);
-    cursor = citation.index + citation.text.length;
+  for (const node of textNodes) {
+    const text = node.textContent;
+    const citations = await findCitations(text);
+    if (!citations || citations.length === 0) continue;
+    if (!node.isConnected) return; // el was re-rendered while books loaded
+
+    const fragment = document.createDocumentFragment();
+    let cursor = 0;
+    for (const citation of citations) {
+      fragment.append(text.slice(cursor, citation.index));
+      const link = document.createElement('a');
+      link.href = citationHref(citation);
+      link.className = 'citation-link';
+      link.textContent = citation.text;
+      fragment.append(link);
+      cursor = citation.index + citation.text.length;
+    }
+    fragment.append(text.slice(cursor));
+    node.replaceWith(fragment);
   }
-  fragment.append(text.slice(cursor));
-  el.replaceChildren(fragment);
 }
 
 //One-time pass giving notes/flashcards saved before citation linking existed their verseIds.
@@ -89,4 +98,4 @@ const backfillVerseLinks = () => {
   return backfillPromise;
 }
 
-export { findCitations, verseIdsCitedIn, citationHref, renderWithCitationLinks, backfillVerseLinks };
+export { findCitations, verseIdsCitedIn, citationHref, linkCitationsIn, backfillVerseLinks };

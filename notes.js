@@ -1,5 +1,6 @@
 import { getAllNotes, saveNote } from './local-db.js';
 import { verseIdsCitedIn } from './verse-links.js';
+import { stripMarkdown, enhanceNoteEditor } from './note-markdown.js';
 
 const newNoteBtn = document.querySelector("#new-note-btn");
 const newNoteForm = document.querySelector("#new-note-form");
@@ -36,12 +37,14 @@ const populateNotesDiv = async () => {
     const dateEl = noteElement.querySelector(".card-date");
 
     noteLink.href = `note-view.html?id=${encodeURIComponent(note.id)}`;
-    p.innerText = note.text;
+    p.innerText = stripMarkdown(note.text);
     dateEl.textContent = formatNoteDate(note.createdAt);
 
     noteListDiv.append(noteElement);
   }
 }
+
+enhanceNoteEditor(newNoteInput);
 
 newNoteBtn.addEventListener("click", showNewNoteForm);
 

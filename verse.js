@@ -3,6 +3,7 @@ import { getChapterContentCached, getBooksCached, getConnectionsForVerseIds, sav
 import { formatCitation, joinVerseText } from './citation.js';
 import { rememberLocation } from './tab-state.js';
 import { backfillVerseLinks } from './verse-links.js';
+import { stripMarkdown } from './note-markdown.js';
 
 const getParameterByName = (name) => {
   const url = window.location.href;
@@ -93,7 +94,7 @@ const clearSelection = () => {
 //Notes made with "New Note" all start with the quoted verse + citation, so previewing the start
 //would make every link read the same - preview the user's own words after that block instead.
 const notePreviewText = (note) => {
-  const ownWords = note.text.replace(/^\s*"[\s\S]*?"\s*\([^)]*\)\s*/, '').trim();
+  const ownWords = stripMarkdown(note.text.replace(/^\s*"[\s\S]*?"\s*\([^)]*\)\s*/, '')).trim();
   const text = (ownWords || note.reference || note.text).replace(/\s+/g, ' ');
   return text.length > LINKED_TEXT_LENGTH ? `${text.slice(0, LINKED_TEXT_LENGTH).trimEnd()}…` : text;
 }

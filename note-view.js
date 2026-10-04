@@ -1,7 +1,8 @@
 import { getNote, saveNote, deleteNote } from './local-db.js';
 import { confirmDialog } from './confirm-dialog.js';
 import { rememberLocation, getDraft, setDraft, clearDraft } from './tab-state.js';
-import { renderWithCitationLinks, verseIdsCitedIn } from './verse-links.js';
+import { linkCitationsIn, verseIdsCitedIn } from './verse-links.js';
+import { renderMarkdown, enhanceNoteEditor } from './note-markdown.js';
 
 const notFound = document.querySelector("#note-not-found");
 const noteView = document.querySelector("#note-view");
@@ -14,6 +15,8 @@ const editInput = document.querySelector("#note-edit-input");
 const deleteBtn = document.querySelector("#note-delete-btn");
 const cancelBtn = document.querySelector("#note-cancel-btn");
 const deleteDialog = document.querySelector("#delete-dialog");
+
+enhanceNoteEditor(editInput);
 
 const params = new URLSearchParams(window.location.search);
 const noteId = params.get('id');
@@ -38,7 +41,8 @@ const setEditParam = (editing) => {
 }
 
 const showView = () => {
-  renderWithCitationLinks(noteText, currentNote.text);
+  renderMarkdown(noteText, currentNote.text);
+  linkCitationsIn(noteText);
   noteDate.textContent = formatNoteDate(currentNote.createdAt);
   editForm.hidden = true;
   noteView.hidden = false;

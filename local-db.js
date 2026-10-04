@@ -304,6 +304,34 @@ const saveBookmark = (bookmark) => idbPut('bookmarks', { ...bookmark, savedAt: D
 
 const deleteBookmark = (bookId) => idbDelete('bookmarks', bookId);
 
+//True reset - deletes the whole database (user data and the Bible cache; it's rebuilt on the
+//next load) and every localStorage key the app writes, including the pre-IndexedDB legacy
+//keys so their migration can't bring old data back. Other open tabs release their connection
+//via onversionchange, so the delete isn't blocked for long.
+const resetAllData = async () => {
+  if (dbPromise) {
+    try {
+      (await dbPromise).close();
+    } catch {
+      //Never opened successfully - nothing to close
+    }
+    dbPromise = null;
+  }
+  await new Promise((resolve, reject) => {
+    const req = indexedDB.deleteDatabase(DB_NAME);
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+    req.onblocked = () => console.warn('Reset waiting for other jotBible tabs to release the database');
+  });
+  try {
+    for (const key of Object.keys(localStorage)) {
+      if (key.startsWith('jotBible:') || key === 'notes' || key === 'flashcards') localStorage.removeItem(key);
+    }
+  } catch {
+    //Storage unavailable - nothing stored there to clear
+  }
+}
+
 //Every record in a by_verseId-indexed store that touches any of the given verses, deduped
 const getRecordsForVerseIds = async (storeName, verseIds) => {
   const groups = await Promise.all(verseIds.map((id) => idbGetAllByIndex(storeName, 'by_verseId', id)));
@@ -334,4 +362,5 @@ export {
   getAllFlashcards, getFlashcard, saveFlashcard, deleteFlashcard, getFlashcardsForVerseIds,
   getConnectionsForVerseIds, saveConnection, deleteConnection,
   getAllBookmarks, getBookmark, saveBookmark, deleteBookmark,
+  resetAllData,
 };

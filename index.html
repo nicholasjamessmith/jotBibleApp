@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="styles.css">
   <script type="module" src="./search.js"></script>
   <script type="module" src="tab-state.js"></script>
+  <script type="module" src="footer.js"></script>
   <title>jotBible | A Bible notetaking app</title>
 </head>
 
@@ -40,6 +41,59 @@
 
   <main class="container">
   </main>
+
+  <footer class="app-footer">
+    <button type="button" id="about-btn" class="footer-btn">About jotBible</button>
+    <button type="button" id="reset-btn" class="footer-btn reset-btn">Reset jotBible</button>
+
+    <dialog id="about-dialog" class="card-dialog about-dialog" aria-labelledby="about-dialog-title">
+      <h2 id="about-dialog-title" class="card-dialog-title">About jotBible</h2>
+      <p>jotBible is a place to read the Bible and keep your own notes and study cards alongside it.</p>
+
+      <h3>Read</h3>
+      <ul>
+        <li>Pick a book, then a chapter. Breadcrumbs at the top take you back a level.</li>
+        <li>Tap <strong>Bookmark</strong> under a chapter title to save your place (one per book). Find them under <strong>Bookmarks</strong> on the Read page.</li>
+      </ul>
+
+      <h3>Work with verses</h3>
+      <ul>
+        <li>Tap one or more verses to select them, then <strong>Underline</strong>, <strong>Copy</strong>, or start a <strong>New Note</strong> or <strong>New Flashcard</strong> with them filled in.</li>
+        <li>A small green dot by a verse number means a note or flashcard mentions it. Select the verse to see links to them.</li>
+      </ul>
+
+      <h3>Notes &amp; Study</h3>
+      <ul>
+        <li>Use the toolbar for <strong>bold</strong> and bulleted or numbered lists.</li>
+        <li>Type a reference like <em>John 3:16</em> or <em>Rom 8:28–30</em> and it becomes a link to that passage.</li>
+        <li>On the Study page, tap a flashcard to flip between the reference and the scripture.</li>
+      </ul>
+
+      <h3>Search</h3>
+      <ul>
+        <li>Search the Bible and your notes at once, or narrow results with the <strong>OT</strong>, <strong>NT</strong>, and <strong>Notes</strong> filters.</li>
+      </ul>
+
+      <h3>Good to know</h3>
+      <ul>
+        <li>Each tab remembers where you left off, and unsaved edits are kept as drafts.</li>
+        <li>Everything is saved on this device only. <strong>Reset jotBible</strong> erases it all.</li>
+      </ul>
+
+      <form method="dialog" class="card-dialog-actions">
+        <button value="close" class="card-composer-submit btn btn-blue">Close</button>
+      </form>
+    </dialog>
+
+    <dialog id="reset-dialog" class="card-dialog" aria-labelledby="reset-dialog-title">
+      <h2 id="reset-dialog-title" class="card-dialog-title">Reset jotBible?</h2>
+      <p class="reset-dialog-text">This permanently deletes everything jotBible has saved on this device: notes, flashcards, underlines, bookmarks, unsaved drafts, and downloaded Bible text. It can't be undone.</p>
+      <form method="dialog" class="card-dialog-actions">
+        <button value="cancel" class="btn btn-red">Cancel</button>
+        <button value="confirm" class="card-composer-submit btn btn-danger">Reset everything</button>
+      </form>
+    </dialog>
+  </footer>
 
 </body>
 

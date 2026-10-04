@@ -20,8 +20,6 @@ booksPromise.then((books) => {
       NT.push(books[z]);
     }
   }
-  console.log('OT:', OT);
-  console.log('NT:', NT);
   const OTList = document.createElement('ul')
   OTList.classList.add('OT');
   const NTList = document.createElement('ul')

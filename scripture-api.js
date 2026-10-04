@@ -31,7 +31,6 @@ const fetchBibleData = (basUrl) => {
       console.error('Error fetching Bible data:', error);
       return null;
     });
-  console.log('Fetched Bible data:', bibleData);
 }
 
 //Return list of Bible books

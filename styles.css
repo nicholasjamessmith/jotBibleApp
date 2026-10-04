@@ -1228,7 +1228,7 @@ a.citation-link:hover {
   color: var(--color-white);
 }
 
-.btn-red {
+.btn-secondary {
   background: var(--color-white);
   color: var(--color-black);
 }

@@ -6,6 +6,33 @@ const DB_VERSION = 4;
 
 let dbPromise = null;
 
+//Out-of-the-box demo content - seeded only when the database is created fresh (first visit,
+//or right after a reset deletes it), never for existing users. They're ordinary records, so
+//they edit, link, search and delete like anything the user makes.
+const GENESIS_1_1 = 'In the beginning God created the heaven and the earth.';
+
+const demoNote = () => ({
+  id: crypto.randomUUID(),
+  text: `"${GENESIS_1_1}" (Genesis 1:1)
+
+This is a sample note to show how jotBible works. Edit it into your own, or delete it.
+
+- References like Genesis 1:1 or John 1:1 become links to that passage
+- In 'Edit' mode, use the toolbar for **bold** text and lists
+- Verses a note mentions get a green dot in the reader`,
+  verseIds: ['GEN.1.1', 'JHN.1.1'],
+  reference: 'Genesis 1:1',
+  createdAt: Date.now(),
+});
+
+const demoFlashcard = () => ({
+  id: crypto.randomUUID(),
+  reference: 'Genesis 1:1',
+  scripture: GENESIS_1_1,
+  verseIds: ['GEN.1.1'],
+  createdAt: Date.now(),
+});
+
 const openDB = () => {
   if (dbPromise) return dbPromise;
   dbPromise = new Promise((resolve, reject) => {
@@ -34,6 +61,11 @@ const openDB = () => {
       }
       //v4: one bookmark per book, so the book id is the key - saving a new chapter overwrites the old one
       if (!db.objectStoreNames.contains('bookmarks')) db.createObjectStore('bookmarks', { keyPath: 'bookId' });
+      //Brand-new database (first visit or after a reset) - add the demo note and flashcard
+      if (e.oldVersion === 0) {
+        e.target.transaction.objectStore('notes').put(demoNote());
+        e.target.transaction.objectStore('flashcards').put(demoFlashcard());
+      }
     };
     req.onsuccess = () => {
       const db = req.result;

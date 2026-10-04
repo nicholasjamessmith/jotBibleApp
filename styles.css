@@ -7,7 +7,12 @@
   --color-white: white;
   --color-border: #ddd;
   --color-border-strong: black;
+  --color-border-subtle: #eee;
+  --color-border-input: #ccc;
   --color-muted: #666;
+  /*Text on solid soft-blue/soft-green buttons - stays white in dark mode too, since
+    those mid-tone fills are preserved and black text on them fails contrast (4.3:1)*/
+  --color-on-accent: #ffffff;
   /*Soft palette - blue is the action color, green is secondary. The base
     and dark shades pass WCAG AA with white text; the tints are for
     backgrounds (pair them with the dark shade for text).*/
@@ -38,6 +43,59 @@
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
   --font-sans: Poppins, sans-serif;
   --font-serif: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+/*Dark mode (follows the OS setting) - only the page body goes dark (a muted black, #1c1c1c); the header/nav
+  (and the homepage, whose content is the nav) keep their original light colors.
+  Tokens are overridden on main and the reader's highlight popup (which sits outside
+  main), so nothing inside the header ever sees them. Brand blue/green/red stay the
+  same; tints become dark tints of the same hue and the "-dark" text shades become
+  light shades, so text on tints and links keep AA contrast on the gray.*/
+@media (prefers-color-scheme: dark) {
+  body:not(.home) {
+    background: #1c1c1c;
+  }
+
+  main,
+  #highlight-popup {
+    color-scheme: dark;
+    --color-black: white;
+    --color-white: #1c1c1c;
+    --color-border: #333;
+    --color-border-strong: white;
+    --color-border-subtle: #2a2a2a;
+    --color-border-input: #444;
+    --color-muted: #a0a0a0;
+    --color-soft-blue-dark: #8fb3ec;
+    --color-soft-blue-tint: #243146;
+    --color-soft-green-dark: #9fd4b5;
+    --color-soft-green-tint: #24342c;
+    --color-soft-red-dark: #f0a5b4;
+    --color-soft-red-tint: #422e32;
+    --color-soft-black: #e3e3e3;
+    /*Aliases resolve where they're declared, so re-point them at the dark values here*/
+    --color-blue: var(--color-soft-blue-dark);
+    color: var(--color-black);
+  }
+
+  /*Note/flashcard surfaces (list tiles, view pages, create/edit forms) sit one step
+    lighter than the page so they read as cards. "main" outranks the base .card-tile
+    rule, which comes later in the file.*/
+  main .card-tile {
+    background: #262626;
+  }
+
+  /*Homepage exception - its content is the hero nav, which sits on the page body
+    below the header, so it gets the same muted black with white links and a dark
+    hover tint. The header itself still keeps its light colors.*/
+  body.home {
+    background: #1c1c1c;
+  }
+
+  body.home > .nav {
+    --color-black: white;
+    --color-soft-blue-tint: #243146;
+  }
 }
 
 *,
@@ -72,6 +130,8 @@ a[aria-current="page"] {
 body {
   margin: 0;
   font-family: var(--font-sans);
+  background: var(--color-white);
+  color: var(--color-black);
 }
 
 h1 {
@@ -350,7 +410,7 @@ body.home .nav > a {
 .bookmark-btn[aria-pressed="true"] {
   background: var(--color-soft-blue);
   border-color: var(--color-soft-blue);
-  color: var(--color-white);
+  color: var(--color-on-accent);
 }
 
 .bookmark-btn[aria-pressed="true"] .icon {
@@ -614,7 +674,7 @@ span.v {
 #highlight-underline-btn {
   border: 2px solid var(--color-soft-blue);
   background: var(--color-soft-blue);
-  color: var(--color-white);
+  color: var(--color-on-accent);
 }
 
 #highlight-remove-btn {
@@ -627,7 +687,7 @@ span.v {
 #highlight-flashcard-btn {
   border: 2px solid var(--color-soft-green);
   background: var(--color-soft-green);
-  color: var(--color-white);
+  color: var(--color-on-accent);
 }
 
 #highlight-copy-btn {
@@ -698,7 +758,7 @@ span.v {
 }
 
 #search-results li {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 #search-results li:last-child {
@@ -723,7 +783,7 @@ span.v {
   font-size: 0.85em;
   padding-bottom: var(--space-1);
   margin-bottom: var(--space-1);
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--color-border-input);
 }
 
 .search-result-text {
@@ -939,7 +999,7 @@ a.citation-link:hover {
   margin-bottom: var(--space-2);
   font-size: 1em;
   resize: vertical;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border-input);
   border-radius: var(--radius-sm);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }

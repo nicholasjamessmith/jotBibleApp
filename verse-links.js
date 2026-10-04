@@ -83,8 +83,8 @@ const backfillVerseLinks = () => {
       }
     }
     try {
-      await fill(await getAllNotes(), (note) => note.text, saveNote);
-      await fill(await getAllFlashcards(), (card) => `${card.reference}\n${card.scripture}`, saveFlashcard);
+      await fill(await getAllNotes(), (note) => note.text, (note) => saveNote(note, { touch: false }));
+      await fill(await getAllFlashcards(), (card) => `${card.reference}\n${card.scripture}`, (card) => saveFlashcard(card, { touch: false }));
       try {
         localStorage.setItem(BACKFILL_KEY, '1');
       } catch {

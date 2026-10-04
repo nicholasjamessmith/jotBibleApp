@@ -237,9 +237,13 @@ const migrateLegacyFlashcards = async () => {
 }
 
 //Notes
+//Most recently active first - an edit (updatedAt) or creation (createdAt), whichever is newer
+const lastActivity = (record) => Math.max(record.updatedAt ?? 0, record.createdAt ?? 0);
+const byRecentActivity = (a, b) => lastActivity(b) - lastActivity(a);
+
 const getAllNotes = async () => {
   await migrateLegacyNotes();
-  return idbGetAll('notes');
+  return (await idbGetAll('notes')).sort(byRecentActivity);
 }
 
 const getNote = async (id) => {
@@ -247,9 +251,12 @@ const getNote = async (id) => {
   return idbGet('notes', id);
 }
 
-const saveNote = (note) => {
+//touch: false for housekeeping saves (e.g. the verse-link backfill) that shouldn't count as an
+//edit and reorder the list
+const saveNote = (note, { touch = true } = {}) => {
   if (!note.id) note.id = crypto.randomUUID();
   if (!note.createdAt) note.createdAt = Date.now();
+  if (touch) note.updatedAt = Date.now();
   if (!note.verseIds) note.verseIds = [];
   if (!note.reference) note.reference = '';
   return idbPut('notes', note);
@@ -265,7 +272,7 @@ const getNotesForVerseIds = async (verseIds) => {
 //Flashcards
 const getAllFlashcards = async () => {
   await migrateLegacyFlashcards();
-  return idbGetAll('flashcards');
+  return (await idbGetAll('flashcards')).sort(byRecentActivity);
 }
 
 const getFlashcard = async (id) => {
@@ -273,9 +280,10 @@ const getFlashcard = async (id) => {
   return idbGet('flashcards', id);
 }
 
-const saveFlashcard = (card) => {
+const saveFlashcard = (card, { touch = true } = {}) => {
   if (!card.id) card.id = crypto.randomUUID();
   if (!card.createdAt) card.createdAt = Date.now();
+  if (touch) card.updatedAt = Date.now();
   if (!card.verseIds) card.verseIds = [];
   return idbPut('flashcards', card);
 }

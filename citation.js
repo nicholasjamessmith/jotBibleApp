@@ -45,4 +45,16 @@ const formatCitation = (bookName, verseRecords) => {
   return `${bookName} ${chapterSegments.join('; ')}`;
 }
 
-export { formatCitation };
+//Joins an ordered list of verse records ({ id, text }) into one passage string, inserting an
+//ellipsis wherever the next verse doesn't directly follow the previous one (a skipped verse
+//or a chapter change) - e.g. John 3:16, 18 -> "For God so loved... … He that believeth..."
+const joinVerseText = (verseRecords) => verseRecords.map((v, i) => {
+  const text = v.text.trim();
+  if (i === 0) return text;
+  const [, prevChapter, prevVerse] = verseRecords[i - 1].id.split('.');
+  const [, chapter, verse] = v.id.split('.');
+  const consecutive = chapter === prevChapter && Number(verse) === Number(prevVerse) + 1;
+  return consecutive ? ` ${text}` : ` … ${text}`;
+}).join('');
+
+export { formatCitation, joinVerseText };

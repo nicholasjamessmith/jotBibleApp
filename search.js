@@ -27,7 +27,7 @@ const renderResults = (verses) => {
     const chapterId = verse.chapterId ?? verse.chapterIds?.[0];
     const resultItem = document.createElement('li');
     const resultLink = document.createElement('a');
-    resultLink.href = `verse.html?chapter=${chapterId}`;
+    resultLink.href = `verse.html?chapter=${chapterId}&verse=${encodeURIComponent(verse.id)}`;
 
     const referenceEl = document.createElement('span');
     referenceEl.className = 'search-result-reference';

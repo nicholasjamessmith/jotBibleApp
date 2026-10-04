@@ -384,6 +384,17 @@ span.v {
   text-decoration-thickness: 2px;
 }
 
+/*Verse(s) opened from a search result - a translucent wash of the underline
+  color, so black text stays fully readable. Independent of .underline and
+  .selected (text-decoration), so a spotlit verse can still be highlighted.*/
+#verse-list .verse.spotlight {
+  background: rgba(59, 111, 196, 0.18);
+  border-radius: var(--radius-sm);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0 2px;
+}
+
 #highlight-popup[hidden] {
   display: none;
 }
@@ -433,7 +444,8 @@ span.v {
   color: var(--color-soft-red-dark);
 }
 
-#highlight-note-btn {
+#highlight-note-btn,
+#highlight-flashcard-btn {
   border: 2px solid var(--color-soft-green);
   background: var(--color-soft-green);
   color: var(--color-white);

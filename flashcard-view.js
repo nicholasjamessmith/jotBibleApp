@@ -15,7 +15,9 @@ const deleteBtn = document.querySelector("#card-delete-btn");
 const cancelBtn = document.querySelector("#card-cancel-btn");
 const deleteDialog = document.querySelector("#delete-dialog");
 
-const cardId = new URLSearchParams(window.location.search).get('id');
+const params = new URLSearchParams(window.location.search);
+const cardId = params.get('id');
+const startInEditMode = params.has('edit');
 let currentCard = null;
 
 const showView = () => {
@@ -68,7 +70,11 @@ const loadCard = async () => {
     notFound.hidden = false;
     return;
   }
-  showView();
+  if (startInEditMode) {
+    showEdit();
+  } else {
+    showView();
+  }
 }
 
 loadCard();

@@ -1,6 +1,6 @@
 import { bibleVersionID } from './scripture-api.js';
-import { getChapterContentCached, getBooksCached, getConnectionsForVerseIds, saveConnection, deleteConnection, saveNote } from './local-db.js';
-import { formatCitation } from './citation.js';
+import { getChapterContentCached, getBooksCached, getConnectionsForVerseIds, saveConnection, deleteConnection, saveNote, saveFlashcard } from './local-db.js';
+import { formatCitation, joinVerseText } from './citation.js';
 
 const getParameterByName = (name) => {
   const url = window.location.href;
@@ -14,6 +14,7 @@ const getParameterByName = (name) => {
 
 const bibleBookID = getParameterByName('book');
 const bibleChapterID = getParameterByName('chapter'); // Get chapter ID from URL
+const targetVerseParam = getParameterByName('verse'); // Verse id(s) to spotlight, e.g. "JHN.3.16" or "JHN.3.16,JHN.3.17" (from search)
 const bibleChapterList = document.querySelector('#chapter-list');
 const verseList = document.getElementById('verse-list'); // Target the correct element
 const highlightPopup = document.getElementById('highlight-popup');
@@ -21,6 +22,7 @@ const highlightUnderlineBtn = document.getElementById('highlight-underline-btn')
 const highlightRemoveBtn = document.getElementById('highlight-remove-btn');
 const highlightCopyBtn = document.getElementById('highlight-copy-btn');
 const highlightNoteBtn = document.getElementById('highlight-note-btn');
+const highlightFlashcardBtn = document.getElementById('highlight-flashcard-btn');
 
 const CHAPTERSTATE = { chapterID: bibleChapterID, bookId: bibleBookID }
 const CHAPTERNUMBERSTATE = { chapterNumber: "" }
@@ -55,6 +57,7 @@ const updateHighlightPopup = () => {
   if (highlightRemoveBtn) highlightRemoveBtn.hidden = selectedRemovalVerseIds.size === 0;
   if (highlightCopyBtn) highlightCopyBtn.hidden = selectedVerseIds.size === 0 && selectedRemovalVerseIds.size === 0;
   if (highlightNoteBtn) highlightNoteBtn.hidden = selectedVerseIds.size === 0 && selectedRemovalVerseIds.size === 0;
+  if (highlightFlashcardBtn) highlightFlashcardBtn.hidden = selectedVerseIds.size === 0 && selectedRemovalVerseIds.size === 0;
 }
 
 const render = () => {
@@ -92,14 +95,29 @@ const applyChapterData = async (data) => {
   render();
 }
 
-getChapterContentCached(bibleVersionID, CHAPTERSTATE.chapterID).then((data) => {
+//Marks the verse(s) named in ?verse= with a background spotlight and scrolls the first into view.
+//Only runs for the chapter the page was opened on - next/prev renders a fresh, unmarked chapter.
+const spotlightTargetVerses = () => {
+  if (!targetVerseParam) return;
+  const targetEls = targetVerseParam.split(',')
+    .map((id) => verseElements.get(id.trim()))
+    .filter(Boolean);
+  if (targetEls.length === 0) return;
+  for (const el of targetEls) el.classList.add('spotlight');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  targetEls[0].scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
+}
+
+getChapterContentCached(bibleVersionID, CHAPTERSTATE.chapterID).then(async (data) => {
   if (!data) return;
-  applyChapterData(data);
+  await applyChapterData(data);
+  spotlightTargetVerses();
 });
 
 const updateUrl = (chapterID) => {
   const url = new URL(window.location);
   url.searchParams.set('chapter', chapterID);
+  url.searchParams.delete('verse');
   window.history.pushState({}, '', url);
 }
 
@@ -193,7 +211,7 @@ highlightCopyBtn.addEventListener("click", async () => {
   const book = books.find((b) => b.id === CHAPTERSTATE.bookId);
   const bookName = book ? book.name : CHAPTERSTATE.bookId;
   const reference = formatCitation(bookName, orderedVerses);
-  const text = `"${orderedVerses.map((v) => v.text.trim()).join(' ')}" (${reference})`;
+  const text = `"${joinVerseText(orderedVerses)}" (${reference})`;
 
   try {
     await navigator.clipboard.writeText(text);
@@ -223,11 +241,30 @@ highlightNoteBtn.addEventListener("click", async () => {
   const book = books.find((b) => b.id === CHAPTERSTATE.bookId);
   const bookName = book ? book.name : CHAPTERSTATE.bookId;
   const reference = formatCitation(bookName, orderedVerses);
-  const text = `"${orderedVerses.map((v) => v.text.trim()).join(' ')}" (${reference})\n\n`;
+  const text = `"${joinVerseText(orderedVerses)}" (${reference})\n\n`;
 
   const note = { text, reference, verseIds: orderedVerses.map((v) => v.id) };
   await saveNote(note);
   window.location.href = `note-view.html?id=${encodeURIComponent(note.id)}&edit`;
+});
+
+//Creates a flashcard with the citation as its Reference side and the verse text as its
+//Scripture side, then opens it in edit mode so the user can review or tweak both fields.
+highlightFlashcardBtn.addEventListener("click", async () => {
+  const orderedVerses = CONTENTSTATE.verses.filter(
+    (v) => selectedVerseIds.has(v.id) || selectedRemovalVerseIds.has(v.id)
+  );
+  if (orderedVerses.length === 0) return;
+
+  const books = await getBooksCached(bibleVersionID);
+  const book = books.find((b) => b.id === CHAPTERSTATE.bookId);
+  const bookName = book ? book.name : CHAPTERSTATE.bookId;
+  const reference = formatCitation(bookName, orderedVerses);
+  const scripture = joinVerseText(orderedVerses);
+
+  const card = { reference, scripture, verseIds: orderedVerses.map((v) => v.id) };
+  await saveFlashcard(card);
+  window.location.href = `flashcard-view.html?id=${encodeURIComponent(card.id)}&edit`;
 });
 
 //Clicking anywhere outside the verse list or the popup itself cancels any pending

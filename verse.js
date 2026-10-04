@@ -1,5 +1,5 @@
 import { bibleVersionID } from './scripture-api.js';
-import { getChapterContentCached, getBooksCached, getConnectionsForVerseIds, saveConnection, deleteConnection, saveNote, saveFlashcard, getNotesForVerseIds, getFlashcardsForVerseIds } from './local-db.js';
+import { getChapterContentCached, getBooksCached, getConnectionsForVerseIds, saveConnection, deleteConnection, saveNote, saveFlashcard, getNotesForVerseIds, getFlashcardsForVerseIds, getBookmark, saveBookmark, deleteBookmark } from './local-db.js';
 import { formatCitation, joinVerseText } from './citation.js';
 import { rememberLocation } from './tab-state.js';
 import { backfillVerseLinks } from './verse-links.js';
@@ -26,6 +26,8 @@ const highlightNoteBtn = document.getElementById('highlight-note-btn');
 const highlightFlashcardBtn = document.getElementById('highlight-flashcard-btn');
 const highlightLinks = document.getElementById('highlight-links');
 const highlightCloseBtn = document.getElementById('highlight-close-btn');
+const bookmarkBtn = document.getElementById('bookmark-btn');
+const bookmarkLabel = bookmarkBtn.querySelector('.bookmark-label');
 
 //Same Lucide icons as the Notes / Study nav links
 const ICON_ATTRS = 'class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
@@ -47,6 +49,7 @@ let selectedRemovalVerseIds = new Set(); // already-highlighted verses pending h
 let verseElements = new Map(); // verseId -> rendered <span> element, rebuilt each render()
 let linkedLookupId = 0; // bumped per lookup so a slow, stale lookup can't overwrite a newer one
 let linkedExpanded = false; // whether "+ N more" has been clicked for the current selection
+let bookmarkLookupId = 0; // same stale-lookup guard as linkedLookupId, for the bookmark button
 
 //Click semantics depend on whether the verse is already highlighted: an unhighlighted verse
 //toggles into the "new highlight" selection, an already-highlighted one toggles into "remove" -
@@ -191,7 +194,47 @@ const applyChapterData = async (data) => {
   const chapterVerseIds = new Set(verseIds);
   linkedVerseIds = new Set([...notes, ...cards].flatMap((r) => r.verseIds).filter((id) => chapterVerseIds.has(id)));
   render();
+  updateBookmarkButton();
 }
+
+//One bookmark per book: "Bookmark" when the book has none, "Bookmarked" on the bookmarked
+//chapter (click removes it), "Move bookmark here" when it's on another chapter of this book
+const updateBookmarkButton = async () => {
+  const lookupId = ++bookmarkLookupId;
+  const bookmark = await getBookmark(CHAPTERSTATE.bookId);
+  if (lookupId !== bookmarkLookupId) return;
+
+  const isHere = bookmark?.chapterId === CHAPTERSTATE.chapterID;
+  bookmarkBtn.setAttribute('aria-pressed', String(isHere));
+  if (isHere) {
+    bookmarkLabel.textContent = 'Bookmarked';
+    bookmarkBtn.title = 'Remove this bookmark';
+  } else if (bookmark) {
+    bookmarkLabel.textContent = 'Move bookmark here';
+    bookmarkBtn.title = `Currently at ${bookmark.bookName} ${bookmark.chapterNumber}`;
+  } else {
+    bookmarkLabel.textContent = 'Bookmark';
+    bookmarkBtn.title = 'Save your place in this book';
+  }
+  bookmarkBtn.hidden = false;
+}
+
+bookmarkBtn.addEventListener('click', async () => {
+  const bookmark = await getBookmark(CHAPTERSTATE.bookId);
+  if (bookmark?.chapterId === CHAPTERSTATE.chapterID) {
+    await deleteBookmark(CHAPTERSTATE.bookId);
+  } else {
+    const books = await getBooksCached(bibleVersionID);
+    const book = books.find((b) => b.id === CHAPTERSTATE.bookId);
+    await saveBookmark({
+      bookId: CHAPTERSTATE.bookId,
+      bookName: book ? book.name : CHAPTERSTATE.bookId,
+      chapterId: CHAPTERSTATE.chapterID,
+      chapterNumber: CHAPTERNUMBERSTATE.chapterNumber,
+    });
+  }
+  updateBookmarkButton();
+});
 
 //Marks the verse(s) named in ?verse= (e.g. "JHN.3.16" or "JHN.3.16,JHN.3.17", from search or a
 //note's citation link) with a background spotlight and scrolls the first into view. Next/prev

@@ -37,7 +37,10 @@
   </header>
 
   <main class="container reader">
-    <h1 id="chapter-title"></h1>
+    <div class="chapter-header">
+      <h1 id="chapter-title"></h1>
+      <button type="button" id="bookmark-btn" class="btn bookmark-btn" aria-pressed="false" hidden><span class="bookmark-label">Bookmark</span><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg></button>
+    </div>
     <div id="verse-list" class="list-container numeric-list"></div>
 
     <div class="chapter-nav">

@@ -321,6 +321,89 @@ body.home .nav > a {
   text-align: center;
 }
 
+/*Chapter title with its bookmark button centered underneath*/
+.chapter-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.chapter-header #chapter-title {
+  margin-bottom: var(--space-2);
+}
+
+/*Bookmark buttons - outlined by default, filled with the action blue when the
+  current chapter is the bookmarked one (aria-pressed)*/
+.bookmark-btn,
+#bookmarks-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: var(--color-white);
+  color: var(--color-black);
+}
+
+.bookmark-btn[hidden] {
+  display: none;
+}
+
+.bookmark-btn[aria-pressed="true"] {
+  background: var(--color-soft-blue);
+  border-color: var(--color-soft-blue);
+  color: var(--color-white);
+}
+
+.bookmark-btn[aria-pressed="true"] .icon {
+  fill: currentColor;
+}
+
+/*Read home - master Bookmarks button with an inline panel above the testament cards*/
+.bookmarks {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+#bookmarks-panel {
+  width: 100%;
+  padding: var(--space-2);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+#bookmarks-panel[hidden] {
+  display: none;
+}
+
+#bookmarks-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#bookmarks-list[hidden] {
+  display: none;
+}
+
+#bookmarks-empty {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-muted);
+}
+
+#bookmarks-empty a {
+  display: inline-block;
+  margin-top: var(--space-2);
+  color: var(--color-blue);
+  font-weight: 600;
+}
+
 #verse-list {
   line-height: 1.8;
   margin-top: var(--space-4);

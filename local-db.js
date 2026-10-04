@@ -2,7 +2,7 @@
 import { getBooks, getChapters, getChapterContentRaw } from './scripture-api.js';
 
 const DB_NAME = 'jotBibleDB';
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 
 let dbPromise = null;
 
@@ -32,6 +32,8 @@ const openDB = () => {
           store.createIndex('by_verseId', 'verseIds', { multiEntry: true });
         }
       }
+      //v4: one bookmark per book, so the book id is the key - saving a new chapter overwrites the old one
+      if (!db.objectStoreNames.contains('bookmarks')) db.createObjectStore('bookmarks', { keyPath: 'bookId' });
     };
     req.onsuccess = () => {
       const db = req.result;
@@ -285,6 +287,15 @@ const getFlashcardsForVerseIds = async (verseIds) => {
   return getRecordsForVerseIds('flashcards', verseIds);
 }
 
+//Bookmarks - { bookId, bookName, chapterId, chapterNumber, savedAt }, at most one per book
+const getAllBookmarks = () => idbGetAll('bookmarks');
+
+const getBookmark = (bookId) => idbGet('bookmarks', bookId);
+
+const saveBookmark = (bookmark) => idbPut('bookmarks', { ...bookmark, savedAt: Date.now() });
+
+const deleteBookmark = (bookId) => idbDelete('bookmarks', bookId);
+
 //Every record in a by_verseId-indexed store that touches any of the given verses, deduped
 const getRecordsForVerseIds = async (storeName, verseIds) => {
   const groups = await Promise.all(verseIds.map((id) => idbGetAllByIndex(storeName, 'by_verseId', id)));
@@ -314,4 +325,5 @@ export {
   getAllNotes, getNote, saveNote, deleteNote, getNotesForVerseIds,
   getAllFlashcards, getFlashcard, saveFlashcard, deleteFlashcard, getFlashcardsForVerseIds,
   getConnectionsForVerseIds, saveConnection, deleteConnection,
+  getAllBookmarks, getBookmark, saveBookmark, deleteBookmark,
 };

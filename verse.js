@@ -25,6 +25,7 @@ const highlightCopyBtn = document.getElementById('highlight-copy-btn');
 const highlightNoteBtn = document.getElementById('highlight-note-btn');
 const highlightFlashcardBtn = document.getElementById('highlight-flashcard-btn');
 const highlightLinks = document.getElementById('highlight-links');
+const highlightCloseBtn = document.getElementById('highlight-close-btn');
 
 //Same Lucide icons as the Notes / Study nav links
 const ICON_ATTRS = 'class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
@@ -72,6 +73,18 @@ const updateHighlightPopup = () => {
   if (highlightFlashcardBtn) highlightFlashcardBtn.hidden = selectedVerseIds.size === 0 && selectedRemovalVerseIds.size === 0;
   linkedExpanded = false;
   updateLinkedItems();
+}
+
+//Deselects every pending verse (new highlight and pending removal) and hides the popup -
+//the shared "take no action" path for the close button, Escape, click-outside and Copy
+const clearSelection = () => {
+  for (const verseId of [...selectedVerseIds, ...selectedRemovalVerseIds]) {
+    const el = verseElements.get(verseId);
+    if (el) el.classList.remove('selected');
+  }
+  selectedVerseIds.clear();
+  selectedRemovalVerseIds.clear();
+  updateHighlightPopup();
 }
 
 //Notes made with "New Note" all start with the quoted verse + citation, so previewing the start
@@ -321,13 +334,7 @@ highlightCopyBtn.addEventListener("click", async () => {
     return;
   }
 
-  for (const verse of orderedVerses) {
-    const el = verseElements.get(verse.id);
-    if (el) el.classList.remove('selected');
-  }
-  selectedVerseIds.clear();
-  selectedRemovalVerseIds.clear();
-  updateHighlightPopup();
+  clearSelection();
 });
 
 //Creates a note that starts with the selected verses (same quote + citation format as Copy),
@@ -374,14 +381,14 @@ highlightFlashcardBtn.addEventListener("click", async () => {
 document.addEventListener('click', (event) => {
   if (selectedVerseIds.size === 0 && selectedRemovalVerseIds.size === 0) return;
   if (verseList.contains(event.target) || highlightPopup.contains(event.target)) return;
+  clearSelection();
+});
 
-  for (const verseId of [...selectedVerseIds, ...selectedRemovalVerseIds]) {
-    const el = verseElements.get(verseId);
-    if (el) el.classList.remove('selected');
-  }
-  selectedVerseIds.clear();
-  selectedRemovalVerseIds.clear();
-  updateHighlightPopup();
+highlightCloseBtn.addEventListener('click', clearSelection);
+
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape' || highlightPopup.hidden) return;
+  clearSelection();
 });
 
 //When user clicks next button, next chapter loads if exists.

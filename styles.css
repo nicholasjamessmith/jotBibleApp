@@ -333,6 +333,13 @@ body.home .nav > a {
   font-family: var(--font-serif);
 }
 
+/*End-of-chapter breathing room - tall enough that Previous/Next can scroll
+  clear of the fixed #highlight-popup while verses are selected. main.reader
+  outranks the .container padding shorthands in the media queries.*/
+main.reader {
+  padding-bottom: calc(var(--space-6) * 3);
+}
+
 .chapter-nav {
   display: flex;
   justify-content: space-between;
@@ -443,6 +450,31 @@ span.v {
 
 #highlight-popup button:hover {
   transform: translateY(-1px);
+}
+
+/*Dismiss without taking action - a small round badge on the popup's top-right
+  corner, so it takes no room from the links or action buttons*/
+#highlight-popup #highlight-close-btn {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-size: 1.1em;
+  line-height: 1;
+  border: 2px solid var(--color-border-strong);
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-black);
+}
+
+#highlight-popup #highlight-close-btn:hover {
+  transform: none;
+  background: var(--color-soft-blue-tint);
 }
 
 /*Notes/flashcards linked to the selected verses - a full-width list above the buttons*/

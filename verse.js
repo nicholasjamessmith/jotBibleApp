@@ -1,7 +1,8 @@
 import { bibleVersionID } from './scripture-api.js';
-import { getChapterContentCached, getBooksCached, getConnectionsForVerseIds, saveConnection, deleteConnection, saveNote, saveFlashcard } from './local-db.js';
+import { getChapterContentCached, getBooksCached, getConnectionsForVerseIds, saveConnection, deleteConnection, saveNote, saveFlashcard, getNotesForVerseIds, getFlashcardsForVerseIds } from './local-db.js';
 import { formatCitation, joinVerseText } from './citation.js';
 import { rememberLocation } from './tab-state.js';
+import { backfillVerseLinks } from './verse-links.js';
 
 const getParameterByName = (name) => {
   const url = window.location.href;
@@ -15,7 +16,6 @@ const getParameterByName = (name) => {
 
 const bibleBookID = getParameterByName('book');
 const bibleChapterID = getParameterByName('chapter'); // Get chapter ID from URL
-const targetVerseParam = getParameterByName('verse'); // Verse id(s) to spotlight, e.g. "JHN.3.16" or "JHN.3.16,JHN.3.17" (from search)
 const bibleChapterList = document.querySelector('#chapter-list');
 const verseList = document.getElementById('verse-list'); // Target the correct element
 const highlightPopup = document.getElementById('highlight-popup');
@@ -24,6 +24,14 @@ const highlightRemoveBtn = document.getElementById('highlight-remove-btn');
 const highlightCopyBtn = document.getElementById('highlight-copy-btn');
 const highlightNoteBtn = document.getElementById('highlight-note-btn');
 const highlightFlashcardBtn = document.getElementById('highlight-flashcard-btn');
+const highlightLinks = document.getElementById('highlight-links');
+
+//Same Lucide icons as the Notes / Study nav links
+const ICON_ATTRS = 'class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+const NOTE_ICON = `<svg ${ICON_ATTRS}><path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"/><path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/></svg>`;
+const FLASHCARD_ICON = `<svg ${ICON_ATTRS}><path d="M12 18V5"/><path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/><path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"/><path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"/><path d="M18 18a4 4 0 0 0 2-7.464"/><path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"/><path d="M6 18a4 4 0 0 1-2-7.464"/><path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"/></svg>`;
+const LINKED_PREVIEW_LIMIT = 3;
+const LINKED_TEXT_LENGTH = 50;
 
 const CHAPTERSTATE = { chapterID: bibleChapterID, bookId: bibleBookID }
 const CHAPTERNUMBERSTATE = { chapterNumber: "" }
@@ -32,9 +40,12 @@ const NEXTSTATE = { nextChapter: "" }
 const PREVSTATE = { prevChapter: "" }
 
 let chapterConnections = []; // saved highlight/note/flashcard connections touching this chapter
+let linkedVerseIds = new Set(); // verses in this chapter cited by at least one note or flashcard
 let selectedVerseIds = new Set(); // verses pending a NEW highlight, order derived from CONTENTSTATE.verses at commit time
 let selectedRemovalVerseIds = new Set(); // already-highlighted verses pending highlight removal
 let verseElements = new Map(); // verseId -> rendered <span> element, rebuilt each render()
+let linkedLookupId = 0; // bumped per lookup so a slow, stale lookup can't overwrite a newer one
+let linkedExpanded = false; // whether "+ N more" has been clicked for the current selection
 
 //Click semantics depend on whether the verse is already highlighted: an unhighlighted verse
 //toggles into the "new highlight" selection, an already-highlighted one toggles into "remove" -
@@ -59,6 +70,67 @@ const updateHighlightPopup = () => {
   if (highlightCopyBtn) highlightCopyBtn.hidden = selectedVerseIds.size === 0 && selectedRemovalVerseIds.size === 0;
   if (highlightNoteBtn) highlightNoteBtn.hidden = selectedVerseIds.size === 0 && selectedRemovalVerseIds.size === 0;
   if (highlightFlashcardBtn) highlightFlashcardBtn.hidden = selectedVerseIds.size === 0 && selectedRemovalVerseIds.size === 0;
+  linkedExpanded = false;
+  updateLinkedItems();
+}
+
+//Notes made with "New Note" all start with the quoted verse + citation, so previewing the start
+//would make every link read the same - preview the user's own words after that block instead.
+const notePreviewText = (note) => {
+  const ownWords = note.text.replace(/^\s*"[\s\S]*?"\s*\([^)]*\)\s*/, '').trim();
+  const text = (ownWords || note.reference || note.text).replace(/\s+/g, ' ');
+  return text.length > LINKED_TEXT_LENGTH ? `${text.slice(0, LINKED_TEXT_LENGTH).trimEnd()}…` : text;
+}
+
+const buildLinkedItem = (href, icon, label) => {
+  const li = document.createElement('li');
+  const a = document.createElement('a');
+  a.href = href;
+  a.innerHTML = icon;
+  const span = document.createElement('span');
+  span.textContent = label;
+  a.prepend(span);
+  li.appendChild(a);
+  return li;
+}
+
+//Lists notes/flashcards that reference any selected verse, above the popup's buttons
+const updateLinkedItems = async () => {
+  if (!highlightLinks) return;
+  const lookupId = ++linkedLookupId;
+  const verseIds = [...selectedVerseIds, ...selectedRemovalVerseIds];
+  if (verseIds.length === 0) {
+    highlightLinks.hidden = true;
+    return;
+  }
+
+  await backfillVerseLinks(); // no-op after the first successful run
+  const [notes, cards] = await Promise.all([getNotesForVerseIds(verseIds), getFlashcardsForVerseIds(verseIds)]);
+  if (lookupId !== linkedLookupId) return;
+
+  const items = [
+    ...notes.map((note) => ({ createdAt: note.createdAt, el: buildLinkedItem(`note-view.html?id=${encodeURIComponent(note.id)}`, NOTE_ICON, notePreviewText(note)) })),
+    ...cards.map((card) => ({ createdAt: card.createdAt, el: buildLinkedItem(`flashcard-view.html?id=${encodeURIComponent(card.id)}`, FLASHCARD_ICON, `Flashcard · ${card.reference}`) })),
+  ].sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
+
+  highlightLinks.innerHTML = '';
+  const visible = linkedExpanded ? items : items.slice(0, LINKED_PREVIEW_LIMIT);
+  for (const item of visible) highlightLinks.appendChild(item.el);
+
+  if (items.length > visible.length) {
+    const li = document.createElement('li');
+    const moreBtn = document.createElement('button');
+    moreBtn.type = 'button';
+    moreBtn.className = 'highlight-links-more';
+    moreBtn.textContent = `+ ${items.length - visible.length} more`;
+    moreBtn.addEventListener('click', () => {
+      linkedExpanded = true;
+      updateLinkedItems();
+    });
+    li.appendChild(moreBtn);
+    highlightLinks.appendChild(li);
+  }
+  highlightLinks.hidden = items.length === 0;
 }
 
 const render = () => {
@@ -73,8 +145,10 @@ const render = () => {
     const verseEl = document.createElement('span');
     verseEl.className = 'verse';
     if (underlinedIds.has(verse.id)) verseEl.classList.add('underline');
+    if (linkedVerseIds.has(verse.id)) verseEl.classList.add('has-links');
     verseEl.dataset.verseId = verse.id;
-    verseEl.innerHTML = `<span class="v">${verse.number}</span>${verse.text} `;
+    const linkedTitle = linkedVerseIds.has(verse.id) ? ' title="Has linked notes or flashcards"' : '';
+    verseEl.innerHTML = `<span class="v"${linkedTitle}>${verse.number}</span>${verse.text} `;
     verseEl.addEventListener('click', () => handleVerseClick(verse.id, verseEl));
     verseElements.set(verse.id, verseEl);
     el.appendChild(verseEl);
@@ -92,13 +166,25 @@ const applyChapterData = async (data) => {
   selectedVerseIds.clear();
   selectedRemovalVerseIds.clear();
   updateHighlightPopup();
-  chapterConnections = await getConnectionsForVerseIds(data.verses.map((v) => v.id));
+  const verseIds = data.verses.map((v) => v.id);
+  await backfillVerseLinks(); // no-op after the first successful run
+  const [connections, notes, cards] = await Promise.all([
+    getConnectionsForVerseIds(verseIds),
+    getNotesForVerseIds(verseIds),
+    getFlashcardsForVerseIds(verseIds),
+  ]);
+  chapterConnections = connections;
+  //A note can cite verses in other chapters too - only mark the ones on this page
+  const chapterVerseIds = new Set(verseIds);
+  linkedVerseIds = new Set([...notes, ...cards].flatMap((r) => r.verseIds).filter((id) => chapterVerseIds.has(id)));
   render();
 }
 
-//Marks the verse(s) named in ?verse= with a background spotlight and scrolls the first into view.
-//Only runs for the chapter the page was opened on - next/prev renders a fresh, unmarked chapter.
+//Marks the verse(s) named in ?verse= (e.g. "JHN.3.16" or "JHN.3.16,JHN.3.17", from search or a
+//note's citation link) with a background spotlight and scrolls the first into view. Next/prev
+//drop ?verse= from the URL, so they render a fresh, unmarked chapter.
 const spotlightTargetVerses = () => {
+  const targetVerseParam = new URLSearchParams(window.location.search).get('verse');
   if (!targetVerseParam) return;
   const targetEls = targetVerseParam.split(',')
     .map((id) => verseElements.get(id.trim()))
@@ -142,6 +228,19 @@ const prevButtonClick = () => {
 document.getElementById("next-btn").addEventListener("click", nextButtonClick);
 
 document.getElementById("prev-btn").addEventListener("click", prevButtonClick);
+
+//Back/Forward after next/prev: the URL changes (pushState) but the page doesn't reload,
+//so load whichever chapter the restored URL names
+window.addEventListener('popstate', () => {
+  const chapterID = new URLSearchParams(window.location.search).get('chapter');
+  if (!chapterID || chapterID === CHAPTERSTATE.chapterID) return;
+  getChapterContentCached(bibleVersionID, chapterID).then(async (data) => {
+    if (!data) return;
+    await applyChapterData(data);
+    spotlightTargetVerses();
+    rememberLocation();
+  });
+});
 
 highlightUnderlineBtn.addEventListener("click", async () => {
   const orderedVerses = CONTENTSTATE.verses.filter((v) => selectedVerseIds.has(v.id));

@@ -1,4 +1,5 @@
 import { getAllNotes, saveNote } from './local-db.js';
+import { verseIdsCitedIn } from './verse-links.js';
 
 const newNoteBtn = document.querySelector("#new-note-btn");
 const newNoteForm = document.querySelector("#new-note-form");
@@ -54,7 +55,7 @@ newNoteForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const text = newNoteInput.value.trim();
   if (!text) return;
-  await saveNote({ text });
+  await saveNote({ text, verseIds: (await verseIdsCitedIn(text)) ?? [] });
   populateNotesDiv();
   hideNewNoteForm();
 });

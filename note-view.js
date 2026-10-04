@@ -1,6 +1,7 @@
 import { getNote, saveNote, deleteNote } from './local-db.js';
 import { confirmDialog } from './confirm-dialog.js';
 import { rememberLocation, getDraft, setDraft, clearDraft } from './tab-state.js';
+import { renderWithCitationLinks, verseIdsCitedIn } from './verse-links.js';
 
 const notFound = document.querySelector("#note-not-found");
 const noteView = document.querySelector("#note-view");
@@ -37,7 +38,7 @@ const setEditParam = (editing) => {
 }
 
 const showView = () => {
-  noteText.innerText = currentNote.text;
+  renderWithCitationLinks(noteText, currentNote.text);
   noteDate.textContent = formatNoteDate(currentNote.createdAt);
   editForm.hidden = true;
   noteView.hidden = false;
@@ -75,7 +76,9 @@ editForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const newText = editInput.value.trim();
   if (!newText) return;
-  currentNote = { ...currentNote, text: newText };
+  //Re-link to whatever the text now cites (keeps old links if books couldn't be loaded)
+  const verseIds = (await verseIdsCitedIn(newText)) ?? currentNote.verseIds;
+  currentNote = { ...currentNote, text: newText, verseIds };
   await saveNote(currentNote);
   clearDraft('note', currentNote.id);
   showView();

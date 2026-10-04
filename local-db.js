@@ -2,7 +2,7 @@
 import { getBooks, getChapters, getChapterContentRaw } from './scripture-api.js';
 
 const DB_NAME = 'jotBibleDB';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 let dbPromise = null;
 
@@ -25,8 +25,20 @@ const openDB = () => {
         const store = db.createObjectStore('verseConnections', { keyPath: 'id' });
         store.createIndex('by_verseId', 'verseIds', { multiEntry: true });
       }
+      //v3: notes/flashcards are indexed by the verses they reference, so the reader can find them
+      for (const storeName of ['notes', 'flashcards']) {
+        const store = e.target.transaction.objectStore(storeName);
+        if (!store.indexNames.contains('by_verseId')) {
+          store.createIndex('by_verseId', 'verseIds', { multiEntry: true });
+        }
+      }
     };
-    req.onsuccess = () => resolve(req.result);
+    req.onsuccess = () => {
+      const db = req.result;
+      //Let a newer version (opened in another tab) upgrade instead of being blocked by this one
+      db.onversionchange = () => db.close();
+      resolve(db);
+    };
     req.onerror = () => reject(req.error);
   });
   return dbPromise;
@@ -243,6 +255,11 @@ const saveNote = (note) => {
 
 const deleteNote = (id) => idbDelete('notes', id);
 
+const getNotesForVerseIds = async (verseIds) => {
+  await migrateLegacyNotes();
+  return getRecordsForVerseIds('notes', verseIds);
+}
+
 //Flashcards
 const getAllFlashcards = async () => {
   await migrateLegacyFlashcards();
@@ -263,17 +280,25 @@ const saveFlashcard = (card) => {
 
 const deleteFlashcard = (id) => idbDelete('flashcards', id);
 
-//Verse connections (highlights, and future note/flashcard verse-links)
-const getConnectionsForVerseIds = async (verseIds) => {
-  const groups = await Promise.all(verseIds.map((id) => idbGetAllByIndex('verseConnections', 'by_verseId', id)));
+const getFlashcardsForVerseIds = async (verseIds) => {
+  await migrateLegacyFlashcards();
+  return getRecordsForVerseIds('flashcards', verseIds);
+}
+
+//Every record in a by_verseId-indexed store that touches any of the given verses, deduped
+const getRecordsForVerseIds = async (storeName, verseIds) => {
+  const groups = await Promise.all(verseIds.map((id) => idbGetAllByIndex(storeName, 'by_verseId', id)));
   const byId = new Map();
   for (const group of groups) {
-    for (const connection of group) {
-      byId.set(connection.id, connection);
+    for (const record of group) {
+      byId.set(record.id, record);
     }
   }
   return Array.from(byId.values());
 }
+
+//Verse connections (highlights)
+const getConnectionsForVerseIds = (verseIds) => getRecordsForVerseIds('verseConnections', verseIds);
 
 const saveConnection = (connection) => {
   if (!connection.id) connection.id = crypto.randomUUID();
@@ -286,7 +311,7 @@ const deleteConnection = (id) => idbDelete('verseConnections', id);
 
 export {
   getBooksCached, getChaptersCached, getChapterContentCached,
-  getAllNotes, getNote, saveNote, deleteNote,
-  getAllFlashcards, getFlashcard, saveFlashcard, deleteFlashcard,
+  getAllNotes, getNote, saveNote, deleteNote, getNotesForVerseIds,
+  getAllFlashcards, getFlashcard, saveFlashcard, deleteFlashcard, getFlashcardsForVerseIds,
   getConnectionsForVerseIds, saveConnection, deleteConnection,
 };

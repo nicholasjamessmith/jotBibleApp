@@ -363,6 +363,19 @@ span.v {
   font-weight: bold;
 }
 
+/*Verse cited by a note or flashcard - a small dot after its number (select the
+  verse to see the linked items in the highlight popup)*/
+#verse-list .verse.has-links .v::after {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 2px;
+  border-radius: 50%;
+  background: var(--color-soft-green);
+  vertical-align: middle;
+}
+
 #verse-list .verse {
   cursor: pointer;
 }
@@ -430,6 +443,57 @@ span.v {
 
 #highlight-popup button:hover {
   transform: translateY(-1px);
+}
+
+/*Notes/flashcards linked to the selected verses - a full-width list above the buttons*/
+#highlight-links {
+  flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0 0 var(--space-2);
+  list-style: none;
+  border-bottom: 1px solid var(--color-border);
+}
+
+#highlight-links[hidden] {
+  display: none;
+}
+
+#highlight-links a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+#highlight-links a:hover {
+  background: var(--color-soft-blue-tint);
+}
+
+#highlight-links a span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#highlight-popup .highlight-links-more {
+  padding: var(--space-1) var(--space-2);
+  border: none;
+  background: none;
+  font-weight: 600;
+  color: var(--color-blue);
+}
+
+#highlight-popup .highlight-links-more:hover {
+  transform: none;
+  text-decoration: underline;
 }
 
 #highlight-underline-btn {
@@ -609,6 +673,30 @@ a.card-tile--entry:hover {
 .note-page .card-dialog-text {
   margin-top: 0;
   line-height: 1.6;
+  white-space: pre-wrap; /*keeps the note's line breaks now that it renders text + citation links*/
+}
+
+/*Verse references in notes/flashcards, linking into the reader (verse-links.js)*/
+a.citation-link:link,
+a.citation-link:visited {
+  color: var(--color-blue);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--color-soft-blue);
+  text-underline-offset: 2px;
+}
+
+a.citation-link:hover {
+  text-decoration-color: var(--color-blue);
+}
+
+#card-reader-link {
+  display: inline-block;
+  margin-top: var(--space-2);
+}
+
+#card-reader-link[hidden] {
+  display: none;
 }
 
 .card-preview-text {

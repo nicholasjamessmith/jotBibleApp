@@ -1,4 +1,5 @@
 import { getAllFlashcards, saveFlashcard } from './local-db.js';
+import { verseIdsCitedIn } from './verse-links.js';
 
 const newCardBtn = document.querySelector("#new-card-btn");
 const newCardForm = document.querySelector("#new-card-form");
@@ -49,7 +50,7 @@ newCardForm.addEventListener("submit", async (e) => {
   const reference = newCardSideA.value.trim();
   const scripture = newCardSideB.value.trim();
   if (!reference || !scripture) return;
-  await saveFlashcard({ reference, scripture });
+  await saveFlashcard({ reference, scripture, verseIds: (await verseIdsCitedIn(`${reference}\n${scripture}`)) ?? [] });
   populateCardsDiv();
   hideNewCardForm();
 });

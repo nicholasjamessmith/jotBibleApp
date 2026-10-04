@@ -48,7 +48,14 @@
         </div>
       </form>
 
-      <div id="note-list"></div>
+      <div class="note-pager" aria-roledescription="carousel" aria-label="Notes">
+        <button type="button" class="pager-arrow pager-prev" aria-label="Previous page" hidden><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+        <div class="note-viewport">
+          <div id="note-list"></div>
+        </div>
+        <button type="button" class="pager-arrow pager-next" aria-label="Next page" hidden><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      </div>
+      <p class="pager-status" aria-live="polite" hidden></p>
     </div>
 
     <template id="note-template">

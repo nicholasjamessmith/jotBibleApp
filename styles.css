@@ -872,10 +872,82 @@ span.v {
   gap: var(--space-3);
 }
 
+/*Notes carousel (notes.js) - tall arrows either side of a viewport; #note-list is a
+  track of side-by-side slides, each a vertical stack of up to 5 notes, and moves one
+  slide-width at a time. The track is as tall as its tallest slide, so the arrows and
+  layout stay put when a shorter last page is shown.*/
+.note-pager {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-2);
+}
+
+/*The small padding/negative margin keeps card shadows and hover lift from being clipped*/
+.note-viewport {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  padding: var(--space-1);
+  margin: calc(-1 * var(--space-1));
+}
+
 #note-list {
+  display: flex;
+  align-items: flex-start;
+  transition: transform 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #note-list {
+    transition: none;
+  }
+}
+
+.note-slide {
+  flex: 0 0 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+}
+
+.pager-arrow {
+  flex: 0 0 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  color: var(--color-black);
+  cursor: pointer;
+}
+
+.pager-arrow[hidden] {
+  display: none;
+}
+
+.pager-arrow .icon {
+  width: 1.4em;
+  height: 1.4em;
+  margin: 0;
+}
+
+.pager-arrow:hover:not(:disabled) {
+  background: var(--color-soft-blue-tint);
+}
+
+.pager-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.pager-status {
+  margin: 0;
+  text-align: center;
+  font-size: 0.85em;
+  color: var(--color-muted);
 }
 
 .card-tile {
@@ -1311,6 +1383,15 @@ a.citation-link:hover {
 @media (width <=600px) {
   .container {
     padding: 0 16px;
+  }
+
+  /*Narrower carousel arrows so notes keep most of a phone's width*/
+  .pager-arrow {
+    flex-basis: 28px;
+  }
+
+  .note-pager {
+    gap: var(--space-1);
   }
 
   h1 {

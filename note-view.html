@@ -51,11 +51,19 @@
     <form id="note-edit-form" class="card-tile card-dialog-form note-page" hidden>
       <textarea id="note-edit-input" class="card-dialog-input" rows="10" required></textarea>
       <div class="card-dialog-actions">
-        <button type="button" id="note-delete-btn" class="btn btn-red">Delete</button>
+        <button type="button" id="note-delete-btn" class="btn btn-danger">Delete</button>
         <button type="button" id="note-cancel-btn" class="btn btn-red">Cancel</button>
         <button type="submit" class="card-composer-submit btn btn-blue">Save</button>
       </div>
     </form>
+
+    <dialog id="delete-dialog" class="card-dialog" aria-labelledby="delete-dialog-title">
+      <h2 id="delete-dialog-title" class="card-dialog-title">Delete this note?</h2>
+      <form method="dialog" class="card-dialog-actions">
+        <button value="cancel" class="btn btn-red">Cancel</button>
+        <button value="confirm" class="card-composer-submit btn btn-danger">Delete</button>
+      </form>
+    </dialog>
   </main>
 
 </body>

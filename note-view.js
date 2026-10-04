@@ -1,4 +1,5 @@
 import { getNote, saveNote, deleteNote } from './local-db.js';
+import { confirmDialog } from './confirm-dialog.js';
 
 const notFound = document.querySelector("#note-not-found");
 const noteView = document.querySelector("#note-view");
@@ -10,6 +11,7 @@ const editForm = document.querySelector("#note-edit-form");
 const editInput = document.querySelector("#note-edit-input");
 const deleteBtn = document.querySelector("#note-delete-btn");
 const cancelBtn = document.querySelector("#note-cancel-btn");
+const deleteDialog = document.querySelector("#delete-dialog");
 
 const noteId = new URLSearchParams(window.location.search).get('id');
 let currentNote = null;
@@ -51,7 +53,7 @@ editForm.addEventListener("submit", async (e) => {
 });
 
 deleteBtn.addEventListener("click", async () => {
-  if (!confirm("Delete this note?")) return;
+  if (!(await confirmDialog(deleteDialog))) return;
   await deleteNote(currentNote.id);
   window.location.href = "notes.html";
 });

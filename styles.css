@@ -17,6 +17,11 @@
   --color-soft-green: #3a7d5a;
   --color-soft-green-dark: #2f6b4b;
   --color-soft-green-tint: #e6f3ec;
+  /*Destructive actions (delete/remove) - dark red text on the pink tint
+    passes WCAG AA (5.4:1); the base shade is for borders only.*/
+  --color-soft-red: #d9748a;
+  --color-soft-red-dark: #a63d4d;
+  --color-soft-red-tint: #fcebee;
   --color-soft-black: #1c1c1c;
   --color-action: var(--color-soft-blue);
   --color-secondary: var(--color-soft-green);
@@ -419,7 +424,9 @@ span.v {
 }
 
 #highlight-remove-btn {
-  border: 2px dashed var(--color-soft-blue);
+  border: 2px dashed var(--color-soft-red);
+  background: var(--color-soft-red-tint);
+  color: var(--color-soft-red-dark);
 }
 
 #highlight-copy-btn {
@@ -639,10 +646,37 @@ a.card-tile--entry:hover {
   color: var(--color-white);
 }
 
+/*Destructive actions - delete/remove*/
+.btn-danger {
+  background: var(--color-soft-red-tint);
+  color: var(--color-soft-red-dark);
+  border-color: var(--color-soft-red);
+}
+
 .card-composer-submit {
   align-self: flex-end;
   padding: var(--space-2) calc(var(--space-4) + var(--space-1));
   height: auto;
+}
+
+.card-dialog {
+  position: relative;
+  padding: var(--space-6);
+  max-width: 500px;
+  width: 90%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.card-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/*Confirm dialog (confirm-dialog.js) - title + actions*/
+.card-dialog-title {
+  margin: 0;
+  font-size: 1.2em;
 }
 
 .card-dialog-text {
@@ -842,6 +876,12 @@ a.card-tile--entry:hover {
     font-size: 0.9em;
   }
 
+  .card-dialog {
+    padding: 20px;
+    max-width: 95vw;
+    font-size: 0.95em;
+  }
+
   .card-dialog-input {
     font-size: 0.95em;
     height: 120px;
@@ -943,6 +983,11 @@ a.card-tile--entry:hover {
     padding: 10px;
   }
 
+  .card-dialog {
+    padding: 24px;
+    max-width: 90vw;
+  }
+
   .card-dialog-input {
     height: 150px;
   }
@@ -974,6 +1019,11 @@ a.card-tile--entry:hover {
   .container {
     padding: 0 20px;
     max-width: 95%;
+  }
+
+  .card-dialog {
+    padding: 28px;
+    max-width: 85vw;
   }
 
   .card-dialog-input {

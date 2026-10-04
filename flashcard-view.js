@@ -1,4 +1,5 @@
 import { getFlashcard, saveFlashcard, deleteFlashcard } from './local-db.js';
+import { confirmDialog } from './confirm-dialog.js';
 
 const notFound = document.querySelector("#card-not-found");
 const cardView = document.querySelector("#card-view");
@@ -12,6 +13,7 @@ const editSideA = document.querySelector("#card-edit-side-a");
 const editSideB = document.querySelector("#card-edit-side-b");
 const deleteBtn = document.querySelector("#card-delete-btn");
 const cancelBtn = document.querySelector("#card-cancel-btn");
+const deleteDialog = document.querySelector("#delete-dialog");
 
 const cardId = new URLSearchParams(window.location.search).get('id');
 let currentCard = null;
@@ -55,7 +57,7 @@ editForm.addEventListener("submit", async (e) => {
 });
 
 deleteBtn.addEventListener("click", async () => {
-  if (!confirm("Delete this flashcard?")) return;
+  if (!(await confirmDialog(deleteDialog))) return;
   await deleteFlashcard(currentCard.id);
   window.location.href = "study.html";
 });

@@ -284,6 +284,7 @@ body.home .nav > a {
 
 #book-list {
   justify-content: center;
+  align-items: flex-start; /*a collapsed testament card shrinks instead of stretching to match the other*/
   display: flex;
   flex-direction: row;
   overflow-x: hidden;
@@ -304,11 +305,46 @@ body.home .nav > a {
   overflow: hidden;
 }
 
+/*Collapsible testament lists - native <details>, with the h2 band as the clickable summary*/
+.testament > summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.testament > summary::-webkit-details-marker {
+  display: none;
+}
+
+.testament > summary:focus-visible {
+  outline: 2px solid var(--color-blue);
+  outline-offset: -2px;
+}
+
+/*Chevron: points down when open, right when collapsed*/
+.testament h2::after {
+  content: "";
+  width: 0.5em;
+  height: 0.5em;
+  margin-left: auto;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.15s ease;
+}
+
+.testament:not([open]) h2::after {
+  transform: rotate(-45deg);
+}
+
+.testament:not([open]) h2 {
+  border-bottom: none;
+}
+
 .OTWrapper h2,
 .NTWrapper h2 {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   margin: 0;
   padding: var(--space-3) var(--space-4);
   font-size: 0.9em;
@@ -390,6 +426,34 @@ body.home .nav > a {
 
 #chapter-title {
   text-align: center;
+}
+
+/*Read-section breadcrumbs (breadcrumbs.js): Books › Genesis › Chapter 3*/
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  list-style: none;
+  font-size: 0.9em;
+}
+
+.breadcrumbs li + li::before {
+  content: "›";
+  margin-right: var(--space-2);
+  color: var(--color-muted);
+}
+
+.breadcrumbs a:link,
+.breadcrumbs a:visited {
+  color: var(--color-blue);
+  font-weight: 600;
+}
+
+.breadcrumbs [aria-current="page"] {
+  color: var(--color-muted);
 }
 
 /*Chapter title with its bookmark button centered underneath*/
@@ -1345,6 +1409,7 @@ a.citation-link:hover {
 
   #book-list {
     justify-content: center;
+    align-items: stretch;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
@@ -1360,6 +1425,75 @@ a.citation-link:hover {
   overflow-wrap: normal;
 }*/
 
+}
+
+/*Phones 320-600px: Read / Study / Notes become a fixed bottom tab bar, always in
+  thumb reach, instead of the hamburger menu (which still takes over below 320px,
+  where three tabs don't fit). The homepage keeps its big hero menu. Comes after the
+  600px block so these same-specificity rules win in this range.*/
+@media (320px <= width <= 600px) {
+  :root {
+    --tabbar-height: 60px;
+  }
+
+  .nav-toggle-label,
+  .nav-toggle:checked ~ .nav-backdrop {
+    display: none;
+  }
+
+  body:not(.home) .nav,
+  .nav-toggle:checked ~ .nav {
+    display: flex;
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0;
+    margin: 0;
+    padding: var(--space-1) var(--space-1) calc(var(--space-1) + env(safe-area-inset-bottom));
+    background: var(--color-soft-green-tint);
+    border: none;
+    border-top: 1px solid var(--color-border);
+    border-radius: 0;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  /*Each tab: icon above its label, equal widths, a large tap target*/
+  body:not(.home) .nav a {
+    flex: 1;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-height: calc(var(--tabbar-height) - 2 * var(--space-1));
+    padding: var(--space-1);
+    font-size: 0.8em;
+    text-align: center;
+  }
+
+  body:not(.home) .nav a .icon {
+    width: 1.6em;
+    height: 1.6em;
+    margin: 0;
+  }
+
+  body:not(.home) .nav a[aria-current="page"] {
+    border-color: transparent;
+  }
+
+  /*Keep page content and the reader's popup clear of the bar*/
+  body:not(.home) {
+    padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+  }
+
+  #highlight-popup {
+    bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom) + var(--space-3));
+  }
 }
 
 @media (width <=1200px) {

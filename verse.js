@@ -4,6 +4,7 @@ import { formatCitation, joinVerseText } from './citation.js';
 import { rememberLocation } from './tab-state.js';
 import { backfillVerseLinks } from './verse-links.js';
 import { stripMarkdown } from './note-markdown.js';
+import { renderBreadcrumbs } from './breadcrumbs.js';
 
 const getParameterByName = (name) => {
   const url = window.location.href;
@@ -27,6 +28,7 @@ const highlightNoteBtn = document.getElementById('highlight-note-btn');
 const highlightFlashcardBtn = document.getElementById('highlight-flashcard-btn');
 const highlightLinks = document.getElementById('highlight-links');
 const highlightCloseBtn = document.getElementById('highlight-close-btn');
+const breadcrumbs = document.querySelector('.breadcrumbs');
 const bookmarkBtn = document.getElementById('bookmark-btn');
 const bookmarkLabel = bookmarkBtn.querySelector('.bookmark-label');
 
@@ -196,6 +198,26 @@ const applyChapterData = async (data) => {
   linkedVerseIds = new Set([...notes, ...cards].flatMap((r) => r.verseIds).filter((id) => chapterVerseIds.has(id)));
   render();
   updateBookmarkButton();
+  updateBreadcrumbs();
+}
+
+//Books › <Book> › Chapter N - refreshed per chapter, since next/prev can cross into another book
+const updateBreadcrumbs = async () => {
+  const { bookId } = CHAPTERSTATE;
+  const chapterNumber = CHAPTERNUMBERSTATE.chapterNumber;
+  let bookName = bookId;
+  try {
+    const books = await getBooksCached(bibleVersionID);
+    bookName = books.find((b) => b.id === bookId)?.name ?? bookId;
+  } catch {
+    //Fall back to the book id
+  }
+  if (CHAPTERSTATE.bookId !== bookId || CHAPTERNUMBERSTATE.chapterNumber !== chapterNumber) return; // chapter changed meanwhile
+  renderBreadcrumbs(breadcrumbs, [
+    { label: 'Books', href: 'book.html' },
+    { label: bookName, href: `chapter.html?book=${encodeURIComponent(bookId)}` },
+    { label: `Chapter ${chapterNumber}` },
+  ]);
 }
 
 //One bookmark per book: "Bookmark" when the book has none, "Bookmarked" on the bookmarked

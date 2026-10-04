@@ -75,9 +75,31 @@ document.getElementById('bookmarks-start').addEventListener('click', (e) => {
   e.preventDefault();
   bookmarksPanel.hidden = true;
   bookmarksToggle.setAttribute('aria-expanded', 'false');
+  for (const section of document.querySelectorAll('.testament')) section.open = true; // collapsed lists hide the links we focus
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   bookList.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
   bookList.querySelector('a')?.focus({ preventScroll: true });
 });
 
 renderBookmarks(); // fills the count on the toggle before it's opened
+
+//Collapsible testament lists - remember which ones the user closed (per browser)
+const COLLAPSED_KEY = 'jotBible:collapsedTestaments';
+const testamentSections = document.querySelectorAll('.testament');
+let collapsedTestaments = [];
+try {
+  collapsedTestaments = JSON.parse(localStorage.getItem(COLLAPSED_KEY)) ?? [];
+} catch {
+  //Storage unavailable - everything starts open
+}
+for (const section of testamentSections) {
+  if (collapsedTestaments.includes(section.dataset.testament)) section.open = false;
+  section.addEventListener('toggle', () => {
+    const closed = [...testamentSections].filter((s) => !s.open).map((s) => s.dataset.testament);
+    try {
+      localStorage.setItem(COLLAPSED_KEY, JSON.stringify(closed));
+    } catch {
+      //Not remembered - still works for this visit
+    }
+  });
+}

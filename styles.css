@@ -394,6 +394,10 @@ span.v {
   bottom: 24px;
   transform: translateX(-50%);
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: max-content;
+  max-width: calc(100vw - 32px);
   gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
   background: var(--color-white);
@@ -427,6 +431,12 @@ span.v {
   border: 2px dashed var(--color-soft-red);
   background: var(--color-soft-red-tint);
   color: var(--color-soft-red-dark);
+}
+
+#highlight-note-btn {
+  border: 2px solid var(--color-soft-green);
+  background: var(--color-soft-green);
+  color: var(--color-white);
 }
 
 #highlight-copy-btn {

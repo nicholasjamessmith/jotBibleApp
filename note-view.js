@@ -13,7 +13,9 @@ const deleteBtn = document.querySelector("#note-delete-btn");
 const cancelBtn = document.querySelector("#note-cancel-btn");
 const deleteDialog = document.querySelector("#delete-dialog");
 
-const noteId = new URLSearchParams(window.location.search).get('id');
+const params = new URLSearchParams(window.location.search);
+const noteId = params.get('id');
+const startInEditMode = params.has('edit');
 let currentNote = null;
 
 const formatNoteDate = (timestamp) => {
@@ -33,6 +35,7 @@ const showEdit = () => {
   noteView.hidden = true;
   editForm.hidden = false;
   editInput.focus();
+  editInput.setSelectionRange(editInput.value.length, editInput.value.length);
 }
 
 editBtn.addEventListener("click", showEdit);
@@ -64,7 +67,11 @@ const loadNote = async () => {
     notFound.hidden = false;
     return;
   }
-  showView();
+  if (startInEditMode) {
+    showEdit();
+  } else {
+    showView();
+  }
 }
 
 loadNote();

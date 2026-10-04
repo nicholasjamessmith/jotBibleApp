@@ -1,5 +1,5 @@
 import { bibleVersionID } from './scripture-api.js';
-import { getChapterContentCached, getBooksCached, getConnectionsForVerseIds, saveConnection, deleteConnection } from './local-db.js';
+import { getChapterContentCached, getBooksCached, getConnectionsForVerseIds, saveConnection, deleteConnection, saveNote } from './local-db.js';
 import { formatCitation } from './citation.js';
 
 const getParameterByName = (name) => {
@@ -20,6 +20,7 @@ const highlightPopup = document.getElementById('highlight-popup');
 const highlightUnderlineBtn = document.getElementById('highlight-underline-btn');
 const highlightRemoveBtn = document.getElementById('highlight-remove-btn');
 const highlightCopyBtn = document.getElementById('highlight-copy-btn');
+const highlightNoteBtn = document.getElementById('highlight-note-btn');
 
 const CHAPTERSTATE = { chapterID: bibleChapterID, bookId: bibleBookID }
 const CHAPTERNUMBERSTATE = { chapterNumber: "" }
@@ -53,6 +54,7 @@ const updateHighlightPopup = () => {
   if (highlightUnderlineBtn) highlightUnderlineBtn.hidden = selectedVerseIds.size === 0;
   if (highlightRemoveBtn) highlightRemoveBtn.hidden = selectedRemovalVerseIds.size === 0;
   if (highlightCopyBtn) highlightCopyBtn.hidden = selectedVerseIds.size === 0 && selectedRemovalVerseIds.size === 0;
+  if (highlightNoteBtn) highlightNoteBtn.hidden = selectedVerseIds.size === 0 && selectedRemovalVerseIds.size === 0;
 }
 
 const render = () => {
@@ -207,6 +209,25 @@ highlightCopyBtn.addEventListener("click", async () => {
   selectedVerseIds.clear();
   selectedRemovalVerseIds.clear();
   updateHighlightPopup();
+});
+
+//Creates a note that starts with the selected verses (same quote + citation format as Copy),
+//then opens it in edit mode so the user can write below them.
+highlightNoteBtn.addEventListener("click", async () => {
+  const orderedVerses = CONTENTSTATE.verses.filter(
+    (v) => selectedVerseIds.has(v.id) || selectedRemovalVerseIds.has(v.id)
+  );
+  if (orderedVerses.length === 0) return;
+
+  const books = await getBooksCached(bibleVersionID);
+  const book = books.find((b) => b.id === CHAPTERSTATE.bookId);
+  const bookName = book ? book.name : CHAPTERSTATE.bookId;
+  const reference = formatCitation(bookName, orderedVerses);
+  const text = `"${orderedVerses.map((v) => v.text.trim()).join(' ')}" (${reference})\n\n`;
+
+  const note = { text, reference, verseIds: orderedVerses.map((v) => v.id) };
+  await saveNote(note);
+  window.location.href = `note-view.html?id=${encodeURIComponent(note.id)}&edit`;
 });
 
 //Clicking anywhere outside the verse list or the popup itself cancels any pending

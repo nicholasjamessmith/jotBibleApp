@@ -808,28 +808,136 @@ span.v {
   margin-left: 0;
 }
 
-#search-results {
+/*Search dropdown - scope toggle on top, scrolling results below*/
+#search-dropdown {
   position: absolute;
   top: 100%;
   right: 0;
   z-index: 10;
-  max-height: 320px;
   width: 320px;
   max-width: calc(100vw - 16px);
-  overflow-y: auto;
-  margin: 4px 0 0;
-  padding: 0;
-  list-style: none;
+  margin-top: 4px;
+  overflow: hidden;
   background: var(--color-white);
   border: 1px solid gray;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
 }
 
-#search-results:empty {
+#search-dropdown[hidden] {
   display: none;
+}
+
+/*OT / NT / Notes filters - a "Filter" label, checkboxes styled as compact pills
+  (tint + border + checkmark when on, so state isn't shown by color alone), and a
+  Clear link that appears while any filter is on*/
+.search-scope {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.search-scope-label {
+  font-size: 0.75em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-muted);
+}
+
+.search-scope input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.search-scope input + span {
+  display: inline-block;
+  padding: 2px var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 0.85em;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.search-scope input + span:hover {
+  background: var(--color-soft-blue-tint);
+}
+
+.search-scope input:checked + span {
+  background: var(--color-soft-blue-tint);
+  border-color: var(--color-soft-blue);
+  color: var(--color-blue);
+}
+
+.search-scope input:checked + span::before {
+  content: "✓ ";
+}
+
+.search-scope input:focus-visible + span {
+  outline: 2px solid var(--color-blue);
+  outline-offset: 2px;
+}
+
+.search-scope-clear {
+  margin-left: auto;
+  padding: 0;
   border: none;
-  box-shadow: none;
+  background: none;
+  font: inherit;
+  font-size: 0.8em;
+  font-weight: 600;
+  color: var(--color-blue);
+  cursor: pointer;
+}
+
+.search-scope-clear[hidden] {
+  display: none;
+}
+
+.search-scope-clear:hover {
+  text-decoration: underline;
+}
+
+#search-results {
+  max-height: 320px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.search-empty {
+  padding: var(--space-3);
+  color: var(--color-muted);
+  text-align: center;
+}
+
+/*Bible / Note badge at the start of each result's reference line*/
+.search-result-kind {
+  display: inline-block;
+  margin-right: var(--space-2);
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-sm);
+  font-size: 0.8em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  vertical-align: 1px;
+}
+
+.search-result-kind--bible {
+  background: var(--color-soft-blue-tint);
+  color: var(--color-soft-blue-dark);
+}
+
+.search-result-kind--note {
+  background: var(--color-soft-green-tint);
+  color: var(--color-soft-green-dark);
 }
 
 #search-results li {

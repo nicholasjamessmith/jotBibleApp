@@ -95,8 +95,10 @@ const getPassage = (bibleVersionID, passageId) => {
 }
 
 //Search verses by keyword or phrase
-const searchVerses = (bibleVersionID, query) => {
-  return fetch(`https://api.scripture.api.bible/v1/bibles/${bibleVersionID}/search?query=${encodeURIComponent(query)}&limit=40`, {
+//range (optional) limits the search to a span of books, e.g. "GEN-MAL" for the Old Testament
+const searchVerses = (bibleVersionID, query, range = '') => {
+  const rangeParam = range ? `&range=${encodeURIComponent(range)}` : '';
+  return fetch(`https://api.scripture.api.bible/v1/bibles/${bibleVersionID}/search?query=${encodeURIComponent(query)}&limit=40${rangeParam}`, {
     headers: { 'api-key': API_key }
   })
     .then(res => res.json())

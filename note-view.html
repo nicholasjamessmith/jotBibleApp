@@ -34,7 +34,16 @@
     <form id="search-form">
       <input id="search-input" title="search" label="search" placeholder="Search" type="text">
       <button type="submit" aria-label="Search"><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></button>
-      <ul id="search-results"></ul>
+      <div id="search-dropdown" hidden>
+        <div class="search-scope" role="group" aria-label="Filter results">
+          <span class="search-scope-label" aria-hidden="true">Filter</span>
+          <label><input type="checkbox" name="search-scope" value="ot"><span>OT</span></label>
+          <label><input type="checkbox" name="search-scope" value="nt"><span>NT</span></label>
+          <label><input type="checkbox" name="search-scope" value="notes"><span>Notes</span></label>
+          <button type="button" class="search-scope-clear" hidden>Clear</button>
+        </div>
+        <ul id="search-results"></ul>
+      </div>
     </form>
   </header>
 

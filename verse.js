@@ -1,6 +1,7 @@
 import { bibleVersionID } from './scripture-api.js';
 import { getChapterContentCached, getBooksCached, getConnectionsForVerseIds, saveConnection, deleteConnection, saveNote, saveFlashcard } from './local-db.js';
 import { formatCitation, joinVerseText } from './citation.js';
+import { rememberLocation } from './tab-state.js';
 
 const getParameterByName = (name) => {
   const url = window.location.href;
@@ -119,6 +120,7 @@ const updateUrl = (chapterID) => {
   url.searchParams.set('chapter', chapterID);
   url.searchParams.delete('verse');
   window.history.pushState({}, '', url);
+  rememberLocation();
 }
 
 const nextButtonClick = () => {

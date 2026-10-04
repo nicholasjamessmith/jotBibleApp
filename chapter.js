@@ -1,5 +1,5 @@
 import { bibleVersionID } from './scripture-api.js';
-import { getChaptersCached } from './local-db.js';
+import { getChaptersCached, getBooksCached } from './local-db.js';
 
 const getParameterByName = (name) => {
   const url = window.location.href;
@@ -18,7 +18,15 @@ const abbreviation = getParameterByName('abbreviation');
 
 let chapterHTML = '';
 
-document.querySelector(`#viewing`).innerHTML = `Viewing: ${bibleBookID}`;
+//Book's full name as the page heading (falls back to its id, e.g. "GEN", if the list can't load)
+getBooksCached(bibleVersionID).then((books) => {
+  const book = books?.find((b) => b.id === bibleBookID);
+  const title = book ? book.name : bibleBookID;
+  document.querySelector('#book-title').textContent = title;
+  document.title = title;
+}).catch(() => {
+  document.querySelector('#book-title').textContent = bibleBookID;
+});
 
 getChaptersCached(bibleVersionID, bibleBookID).then(chaptersList => {
   chapterHTML += `<ol>`;
